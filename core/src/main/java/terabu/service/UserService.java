@@ -20,6 +20,6 @@ public class UserService {
     }
 
     public List<User> allUsers(){
-        return repository.allUsers();
+        return repository.viewAllUsers();
     }
 }

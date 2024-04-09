@@ -7,5 +7,5 @@ import java.util.List;
 public interface UserRepositoryInterface {
     public void add (User user);
     public void deleteById(Long id);
-    public List<User> allUsers();
+    public List<User> viewAllUsers();
 }

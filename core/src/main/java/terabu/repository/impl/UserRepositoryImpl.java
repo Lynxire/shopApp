@@ -12,7 +12,7 @@ import terabu.repository.UserRepositoryInterface;
 import java.util.List;
 
 public class UserRepositoryImpl implements UserRepositoryInterface {
-    private SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public UserRepositoryImpl(){
         sessionFactory = HibernateJavaConfig.getSessionFactory();
@@ -37,7 +37,7 @@ public class UserRepositoryImpl implements UserRepositoryInterface {
     }
 
     @Override
-    public List<User> allUsers() {
+    public List<User> viewAllUsers() {
         Session session = sessionFactory.openSession();
         Query<User> userQuery = session.createQuery("select u from User u", User.class);
         List<User> resultList = userQuery.getResultList();
