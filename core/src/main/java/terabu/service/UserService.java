@@ -1,17 +1,25 @@
 package terabu.service;
 
 import terabu.entity.User;
-import terabu.repository.UserRepository;
-import terabu.repository.impl.UserRepositoryImpl;
+import terabu.repository.UserRepositoryInterface;
+
+import java.util.List;
 
 public class UserService {
-    UserRepository repository;
+    UserRepositoryInterface repository;
 
-    public UserService(UserRepository repository) {
+    public UserService(UserRepositoryInterface repository) {
         this.repository = repository;
     }
 
     public void add(User user){
         repository.add(user);
+    }
+    public void deleteById(Long id){
+        repository.deleteById(id);
+    }
+
+    public List<User> allUsers(){
+        return repository.allUsers();
     }
 }

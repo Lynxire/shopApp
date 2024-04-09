@@ -7,14 +7,21 @@ import terabu.service.UserService;
 
 public class Main {
     public static void main(String[] args) {
+        UserService userService = new UserService(new UserRepositoryImpl());
         User user = new User();
-        user.setId(1L);
+        user.setId(null);
         user.setLogin("Yaroslav");
         user.setPassword("qwerty123");
         user.setEmail("Yaroslav@gmail.com");
         user.setRole(Role.Admin);
-
-        UserService userService = new UserService(new UserRepositoryImpl());
-        userService.add(user);
+//        userService.add(user);
+        User user1 = new User();
+        user1.setId(null);
+        user1.setLogin("Dima");
+        user1.setPassword("1234");
+        user1.setEmail("Mem@gmail.com");
+        user1.setRole(Role.Client);
+//        userService.add(user1);
+        System.out.println(userService.allUsers());
     }
 }
