@@ -1,25 +1,31 @@
 package terabu.service;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import terabu.entity.User;
-import terabu.repository.UserRepositoryInterface;
+import terabu.repository.UserRepositorySpringData;
 
 import java.util.List;
+import java.util.Optional;
 
+@Service
+@RequiredArgsConstructor
 public class UserService {
-    UserRepositoryInterface repository;
+    private final UserRepositorySpringData userRepositorySpringData;
 
-    public UserService(UserRepositoryInterface repository) {
-        this.repository = repository;
-    }
-
-    public void add(User user){
-        repository.add(user);
-    }
-    public void deleteById(Long id){
-        repository.deleteById(id);
-    }
+//    public void add(User user){
+//        repository.add(user);
+//    }
+//    public void deleteById(Long id){
+//        repository.deleteById(id);
+//    }
 
     public List<User> allUsers(){
-        return repository.viewAllUsers();
+        return userRepositorySpringData.findAll();
+    }
+    public User findById(Long id){
+        Optional<User> byId = userRepositorySpringData.findById(id);
+        User user = byId.get();
+        return user;
     }
 }
