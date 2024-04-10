@@ -1,13 +1,11 @@
 package terabu;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import terabu.entity.Role;
 import terabu.entity.User;
-import terabu.repository.impl.UserRepositoryImpl;
 import terabu.service.UserService;
 @Configuration
 @ComponentScan("terabu")
@@ -30,6 +28,8 @@ public class Main {
         user1.setEmail("Mem@gmail.com");
         user1.setRole(Role.Client);
 //        userService.add(user1);
-        System.out.println(userService.findById(1L));
+//        userService.deleteById(2L);
+        System.out.println(userService.findAll());
+//        userService.save(user1);
     }
 }

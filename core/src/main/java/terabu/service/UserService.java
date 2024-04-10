@@ -20,12 +20,23 @@ public class UserService {
 //        repository.deleteById(id);
 //    }
 
-    public List<User> allUsers(){
+    public void save(User user) {
+        userRepositorySpringData.save(user);
+    }
+
+    public List<User> findAll() {
         return userRepositorySpringData.findAll();
     }
-    public User findById(Long id){
+
+    public User findById(Long id) {
         Optional<User> byId = userRepositorySpringData.findById(id);
         User user = byId.get();
         return user;
     }
+
+    public void deleteById(Long id) {
+        userRepositorySpringData.deleteById(id);
+    }
+
+
 }
