@@ -38,5 +38,9 @@ public class UserService {
         userRepositorySpringData.deleteById(id);
     }
 
+    public void deleteAll(){
+        userRepositorySpringData.deleteAll();
+    }
+
 
 }

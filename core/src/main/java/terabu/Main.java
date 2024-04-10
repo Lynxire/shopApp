@@ -30,6 +30,8 @@ public class Main {
 //        userService.add(user1);
 //        userService.deleteById(2L);
         System.out.println(userService.findAll());
+        userService.deleteAll();
+        System.out.println(userService.findAll());
 //        userService.save(user1);
     }
 }

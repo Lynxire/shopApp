@@ -19,5 +19,8 @@ public interface UserRepositorySpringData extends JpaRepository<User, Long> {
     @Modifying
     public User save(User user);
 
+    @Modifying
+    public void deleteAll();
+
 
 }
