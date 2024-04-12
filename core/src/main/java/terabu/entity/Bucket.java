@@ -20,13 +20,13 @@ public class Bucket {
 
     @ManyToMany
     @JoinTable(schema = "app", name = "bucket",
-            joinColumns = @JoinColumn(name = "bucket_id"),
+            joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "goods_id"))
     private List<Goods> goods;
 
     @ManyToMany
     @JoinTable(schema = "app", name = "bucket",
-            joinColumns = @JoinColumn(name = "bucket_id"),
+            joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "orders_id"))
     private List<Order> orders;
 
