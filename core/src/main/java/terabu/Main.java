@@ -4,9 +4,14 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import terabu.entity.Order;
 import terabu.entity.Role;
 import terabu.entity.User;
 import terabu.service.UserService;
+
+import java.util.ArrayList;
+import java.util.List;
+
 @Configuration
 @ComponentScan("terabu")
 public class Main {
@@ -33,5 +38,7 @@ public class Main {
         userService.deleteAll();
         System.out.println(userService.findAll());
 //        userService.save(user1);
+
+        ArrayList<Order> orders = new ArrayList<>();
     }
 }
