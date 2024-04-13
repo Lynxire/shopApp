@@ -2,6 +2,7 @@ package terabu.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import terabu.entity.status.Role;
 
 @Entity
 @Data

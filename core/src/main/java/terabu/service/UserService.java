@@ -28,10 +28,9 @@ public class UserService {
         return userRepositorySpringData.findAll();
     }
 
-    public User findById(Long id) {
-        Optional<User> byId = userRepositorySpringData.findById(id);
-        User user = byId.get();
-        return user;
+    public User findUserById(Long id) {
+        User userById = userRepositorySpringData.findUserById(id);
+        return userById;
     }
 
     public void deleteById(Long id) {
@@ -40,6 +39,10 @@ public class UserService {
 
     public void deleteAll(){
         userRepositorySpringData.deleteAll();
+    }
+
+    public List<User> findUserByIdIn(List<Long> id){
+       return userRepositorySpringData.findUserByIdIn(id);
     }
 
 

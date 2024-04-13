@@ -1,4 +1,4 @@
-package terabu.repository.impl;
+package terabu.repository.hibernate.impl;
 
 import jakarta.persistence.EntityManager;
 import org.hibernate.Session;
@@ -7,7 +7,7 @@ import org.hibernate.query.Query;
 import terabu.config.HibernateConnection;
 import terabu.config.HibernateJavaConfig;
 import terabu.entity.User;
-import terabu.repository.UserRepositoryInterface;
+import terabu.repository.hibernate.UserRepositoryInterface;
 
 import java.util.List;
 
