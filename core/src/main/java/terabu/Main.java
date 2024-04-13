@@ -6,6 +6,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import terabu.entity.status.Role;
 import terabu.entity.User;
+import terabu.service.OrderService;
 import terabu.service.UserService;
 
 @Configuration
@@ -15,6 +16,7 @@ public class Main {
         ApplicationContext ctx = new AnnotationConfigApplicationContext
                 (Main.class);
         UserService userService = ctx.getBean("userService", UserService.class);
+        OrderService orderService = ctx.getBean("orderService", OrderService.class);
         User user = new User();
         user.setId(null);
         user.setLogin("Yaroslav");
@@ -36,6 +38,7 @@ public class Main {
 //        userService.deleteAll();
 //        System.out.println(userService.findAll());
 //        userService.save(user1);
+        System.out.println(orderService.findOrderByUserId(1L));
 
     }
 }

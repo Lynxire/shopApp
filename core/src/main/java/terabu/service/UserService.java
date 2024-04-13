@@ -37,12 +37,12 @@ public class UserService {
         userRepositorySpringData.deleteById(id);
     }
 
-    public void deleteAll(){
+    public void deleteAll() {
         userRepositorySpringData.deleteAll();
     }
 
-    public List<User> findUserByIdIn(List<Long> id){
-       return userRepositorySpringData.findUserByIdIn(id);
+    public List<User> findUserByIdIn(List<Long> id) {
+        return userRepositorySpringData.findUserByIdIn(id);
     }
 
 
