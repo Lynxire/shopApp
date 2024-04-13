@@ -18,13 +18,13 @@ public class Bucket {
     private Long count;
     private Long sum;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(schema = "app", name = "bucket",
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "goods_id"))
     private List<Goods> goods;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(schema = "app", name = "bucket",
             joinColumns = @JoinColumn(name = "id"),
             inverseJoinColumns = @JoinColumn(name = "orders_id"))

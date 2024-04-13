@@ -7,4 +7,5 @@ import terabu.entity.Order;
 public interface OrderRepository extends JpaRepository<Order, Long> {
     public Order save(Order order);
     public Order findOrderByUserId(Long id);
+    public Order findOrderById(Long id);
 }

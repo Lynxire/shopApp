@@ -1,9 +1,12 @@
 package terabu;
 
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import terabu.entity.status.OrderStatus;
 import terabu.entity.status.Role;
 import terabu.entity.User;
 import terabu.service.OrderService;
@@ -38,7 +41,6 @@ public class Main {
 //        userService.deleteAll();
 //        System.out.println(userService.findAll());
 //        userService.save(user1);
-        System.out.println(orderService.findOrderByUserId(1L));
-
+        orderService.updateOrderStatus(1L, OrderStatus.COMPLETE);
     }
 }
