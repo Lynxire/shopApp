@@ -7,7 +7,7 @@ import terabu.entity.User;
 
 import java.util.List;
 
-@Repository
+
 public interface UserRepositorySpringData extends JpaRepository<User, Long> {
     public User findUserById(Long id);
 

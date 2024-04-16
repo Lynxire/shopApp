@@ -2,6 +2,7 @@ package terabu.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,16 +19,16 @@ public class Bucket {
     private Long count;
     private Long sum;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(schema = "app", name = "bucket",
             joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "goods_id"))
+            inverseJoinColumns = @JoinColumn(name = "good_id"))
     private List<Goods> goods;
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(schema = "app", name = "bucket",
             joinColumns = @JoinColumn(name = "id"),
-            inverseJoinColumns = @JoinColumn(name = "orders_id"))
+            inverseJoinColumns = @JoinColumn(name = "order_id"))
     private List<Order> orders;
 
 }

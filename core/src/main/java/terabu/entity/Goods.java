@@ -13,5 +13,6 @@ public class Goods {
     private String name;
     private Long count;
     private Long price;
+    @Enumerated(EnumType.STRING)
     private GoodsType type;
 }
