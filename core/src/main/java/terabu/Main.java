@@ -22,11 +22,9 @@ public class Main {
         UserService userService = ctx.getBean("userService", UserService.class);
         OrderService orderService = ctx.getBean("orderService", OrderService.class);
         User user = new User();
-        user.setId(null);
-        user.setLogin("Yaroslav");
+        user.setLogin("Smit");
         user.setPassword("qwerty123");
-        user.setEmail("Yaroslav@gmail.com");
-        user.setRole(Role.Admin);
+        user.setEmail("Smit@gmail.com");
 //        userService.save(user);
         User user1 = new User();
         user1.setId(null);
@@ -43,6 +41,6 @@ public class Main {
 //        System.out.println(userService.findAll());
 //        userService.save(user1);
 //        orderService.updateOrderStatus(1L, OrderStatus.CREATE);
-        System.out.println(orderService.findAllByOrdersId(1L));
+        userService.authenticate("Smit@gmail.com", "qwerty123");
     }
 }

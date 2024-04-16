@@ -3,46 +3,33 @@ package terabu.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import terabu.entity.User;
+import terabu.entity.status.Role;
 import terabu.repository.UserRepositorySpringData;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepositorySpringData userRepositorySpringData;
 
-//    public void add(User user){
-//        repository.add(user);
-//    }
-//    public void deleteById(Long id){
-//        repository.deleteById(id);
-//    }
-
-    public void save(User user) {
+    public void registerUser(User user) {
+        if (userRepositorySpringData.findByEmail(user.getEmail()).isPresent() || userRepositorySpringData.findByLogin(user.getLogin()).isPresent()) {
+            throw new RuntimeException("User already exists");
+        }
+        if (userRepositorySpringData.findAll().isEmpty()) {
+            user.setRole(Role.Admin);
+        } else {
+            user.setRole(Role.Client);
+        }
         userRepositorySpringData.save(user);
+        System.out.println("User registered successfully");
     }
 
-    public List<User> findAll() {
-        return userRepositorySpringData.findAll();
-    }
-
-    public User findUserById(Long id) {
-        User userById = userRepositorySpringData.findUserById(id);
-        return userById;
-    }
-
-    public void deleteById(Long id) {
-        userRepositorySpringData.deleteById(id);
-    }
-
-    public void deleteAll() {
-        userRepositorySpringData.deleteAll();
-    }
-
-    public List<User> findUserByIdIn(List<Long> id) {
-        return userRepositorySpringData.findUserByIdIn(id);
+    public void authenticate(String email, String password) {
+        if (userRepositorySpringData.findByEmail(email).isPresent() && password.equals(userRepositorySpringData.findByEmail(email).get().getPassword())) {
+            System.out.println("Authenticated");
+        } else {
+            throw new RuntimeException("Invalid email or password");
+        }
     }
 
 
