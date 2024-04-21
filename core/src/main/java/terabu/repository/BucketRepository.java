@@ -6,7 +6,7 @@ import terabu.entity.Bucket;
 
 import java.util.List;
 
-@Repository
+
 public interface BucketRepository extends JpaRepository<Bucket, Long> {
     public List<Bucket> findAllByOrdersId(Long orderId);
 }

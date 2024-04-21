@@ -2,10 +2,8 @@ package terabu.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import terabu.entity.Bucket;
 import terabu.entity.Order;
 import terabu.entity.status.OrderStatus;
-import terabu.repository.BucketRepository;
 import terabu.repository.OrderRepository;
 
 import java.util.List;
@@ -14,9 +12,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class OrderService {
     private final OrderRepository orderRepository;
-    private final BucketRepository bucketRepository;
 
-    public void updateOrderStatus(Long userId, OrderStatus status){
+    public void updateOrderStatusByUserId(Long userId, OrderStatus status){
         Order orderById = orderRepository.findOrderByUserId(userId);
         if(orderById != null){
             orderById.setStatus(status);
@@ -26,4 +23,18 @@ public class OrderService {
             throw new RuntimeException("Пользователь не найден");
         }
     }
+
+    public void saveOrder(Order order){
+        orderRepository.save(order);
+    }
+    public void deleteOrder(Long id){
+        orderRepository.deleteById(id);
+    }
+    public Order getOrderById(Long id){
+        return orderRepository.findOrderById(id);
+    }
+    public List<Order> getAllOrders(){
+        return orderRepository.findAll();
+    }
+
 }
