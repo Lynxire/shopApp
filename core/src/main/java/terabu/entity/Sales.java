@@ -12,7 +12,8 @@ public class Sales {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private LocalDate date;
+    private LocalDate beginDate;
+    private LocalDate endDate;
     private Long count;
 
     @OneToOne(cascade = CascadeType.REMOVE)
