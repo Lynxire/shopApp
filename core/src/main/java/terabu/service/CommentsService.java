@@ -15,7 +15,6 @@ public class CommentsService {
 
     public void addComment(Long userId, String comment) {
         User user = userRepository.findById(userId).get();
-
         Comments comments = new Comments();
         comments.setComments(comment);
         comments.setUser(user);
