@@ -54,9 +54,12 @@ public class UserService {
         return clientMapper.toResponse(client);
     }
 
-    public void authenticate(String email, String password) {
-        if (userRepositorySpringData.findByEmail(email).isPresent() && password.equals(userRepositorySpringData.findByEmail(email).get().getPassword())) {
+    public UserResponse authenticate(UserRequest userRequest) {
+        User userMapperEntity = userMapper.toEntity(userRequest);
+        if (userRepositorySpringData.findByEmail(userMapperEntity.getEmail()).isPresent() && userMapperEntity.getPassword().equals(userRepositorySpringData.findByEmail(userMapperEntity.getEmail()).get().getPassword())) {
             System.out.println("Authenticated");
+            User user = userRepositorySpringData.findByEmail(userMapperEntity.getEmail()).get();
+            return userMapper.toResponse(user);
         } else {
             throw new RuntimeException("Invalid email or password");
         }

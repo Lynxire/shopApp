@@ -22,11 +22,11 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public void authentication(@RequestBody User user) {
-        if(user.getEmail() == null || user.getPassword() == null) {
+    public UserResponse authentication(@RequestBody UserRequest userRequest) {
+        if(userRequest.getEmail() == null || userRequest.getPassword() == null) {
               throw new RuntimeException("Email and password are required");
         }
-        userService.authenticate(user.getEmail(), user.getPassword());
+       return userService.authenticate(userRequest);
     }
 
 }
