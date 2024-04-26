@@ -4,10 +4,11 @@ import jakarta.persistence.*;
 import lombok.Data;
 import terabu.entity.status.Role;
 
+import java.time.LocalDate;
+
 @Entity
 @Data
 @Table(schema = "app", name = "user")
-@Inheritance(strategy = InheritanceType.JOINED)
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +17,13 @@ public class User {
     private String login;
     private String email;
     private String password;
+    @Column(name = "data_registration")
+    private LocalDate dateRegistration;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "data_id")
+    private terabu.entity.Data data;
 
 }
