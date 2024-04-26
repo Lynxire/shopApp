@@ -2,6 +2,8 @@ package terabu.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import terabu.dto.users.UserRequest;
+import terabu.dto.users.UserResponse;
 import terabu.entity.User;
 import terabu.service.UserService;
 
@@ -15,8 +17,8 @@ public class UserController {
 
 
     @PostMapping("/registration")
-    public void registration(@RequestBody User user) {
-        userService.registerUser(user);
+    public UserResponse registration(@RequestBody UserRequest userRequest) {
+        return userService.registerUser(userRequest);
     }
 
     @PostMapping("/login")

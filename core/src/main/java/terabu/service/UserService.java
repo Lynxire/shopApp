@@ -3,10 +3,15 @@ package terabu.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import terabu.dto.users.UserRequest;
+import terabu.dto.users.UserResponse;
 import terabu.entity.Admin;
 import terabu.entity.Client;
 import terabu.entity.User;
 import terabu.entity.status.Role;
+import terabu.mapper.AdminMapper;
+import terabu.mapper.ClientMapper;
+import terabu.mapper.UserMapper;
 import terabu.repository.AdminRepository;
 import terabu.repository.ClientRepository;
 import terabu.repository.UserRepositorySpringData;
@@ -20,33 +25,33 @@ public class UserService {
     private final UserRepositorySpringData userRepositorySpringData;
     private final AdminRepository adminRepository;
     private final ClientRepository clientRepository;
+    private final UserMapper userMapper;
+    private final ClientMapper clientMapper;
+    private final AdminMapper adminMapper;
 
     @Transactional
-    public void registerUser(User user) {
+    public UserResponse registerUser(UserRequest userRequest) {
+        User user = userMapper.toEntity(userRequest);
         if (userRepositorySpringData.findByEmail(user.getEmail()).isPresent() || userRepositorySpringData.findByLogin(user.getLogin()).isPresent()) {
             throw new RuntimeException("User already exists");
         }
 
         if (userRepositorySpringData.findAll().isEmpty()) {
-            Admin admin = new Admin();
-            admin.setLogin(user.getLogin());
-            admin.setPassword(user.getPassword());
-            admin.setEmail(user.getEmail());
+            Admin admin = adminMapper.toEntity(userRequest);
             admin.setRole(Role.Admin);
             admin.setLog("Admin register");
             adminRepository.save(admin);
+            System.out.println("Admin registered successfully");
+            return adminMapper.toResponse(admin);
 
-        } else {
-            Client client = new Client();
-            client.setLogin(user.getLogin());
-            client.setPassword(user.getPassword());
-            client.setEmail(user.getEmail());
-            client.setRole(Role.Client);
-            client.setDateRegistration(LocalDate.now());
-            clientRepository.save(client);
         }
 
+        Client client = clientMapper.toEntity(userRequest);
+        client.setRole(Role.Client);
+        client.setDateRegistration(LocalDate.now());
+        clientRepository.save(client);
         System.out.println("User registered successfully");
+        return clientMapper.toResponse(client);
     }
 
     public void authenticate(String email, String password) {
