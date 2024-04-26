@@ -22,8 +22,6 @@ public class User {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "data_id")
-    private terabu.entity.Data data;
+
 
 }

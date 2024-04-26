@@ -14,5 +14,7 @@ public class Data {
     private String name;
     private String surname;
 
-
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id")
+    private User user;
 }
