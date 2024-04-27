@@ -28,8 +28,13 @@ public class BucketService {
 
     @Transactional
     public BucketResponse addOrderAndGoodsByBucket(Long userId, Long goodsId, Long count) {
-
-        Goods goods1 = goodsRepository.findById(goodsId).orElseThrow(() -> new RuntimeException("Товара нет в наличии"));
+        Goods goodsById = goodsRepository.findById(goodsId).orElseThrow(() -> new RuntimeException("Такого товара нету"));
+        if(goodsById.getCount() <= 0 || goodsById.getCount() < count){
+            throw new RuntimeException ("Товар закончился или привышено кол-во доступных товаров");
+        }
+        Long goods1Count = goodsById.getCount();
+        goodsById.setCount(goods1Count-count);
+        Goods goods = goodsRepository.save(goodsById);
 
         User user1 = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
         Order order = orderRepository.findByUserAndStatus(user1, OrderStatus.CREATE).orElseGet
@@ -41,14 +46,13 @@ public class BucketService {
                 });
 
 
-        Long sum = goods1.getPrice() * count;
+        Long sum = goods.getPrice() * count;
 
         Bucket bucket = new Bucket();
-        bucket.setId(bucket.getId());
         bucket.setCount(count);
         bucket.setSum(sum);
         bucket.setOrders(Collections.singletonList(order));
-        bucket.setGoods(Collections.singletonList(goods1));
+        bucket.setGoods(Collections.singletonList(goods));
 
         bucketRepository.save(bucket);
         return mapper.toResponse(bucket);

@@ -20,14 +20,14 @@ public class Bucket {
     private Long sum;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(schema = "app", name = "bucket",
-            joinColumns = @JoinColumn(name = "id"),
+    @JoinTable(schema = "app", name = "bucket_goods",
+            joinColumns = @JoinColumn(name = "bucket_id"),
             inverseJoinColumns = @JoinColumn(name = "good_id"))
     private List<Goods> goods;
 
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinTable(schema = "app", name = "bucket",
-            joinColumns = @JoinColumn(name = "id"),
+    @JoinTable(schema = "app", name = "bucket_orders",
+            joinColumns = @JoinColumn(name = "bucket_id"),
             inverseJoinColumns = @JoinColumn(name = "order_id"))
     private List<Order> orders;
 
