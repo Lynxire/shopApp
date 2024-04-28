@@ -16,6 +16,6 @@ public class DataController {
     private final DataService dataService;
     @PostMapping("/update")
     public DataResponse updateData(@RequestBody DataRequest dataRequest){
-        return dataService.update(dataRequest, 1L);
+        return dataService.update(dataRequest);
     }
 }

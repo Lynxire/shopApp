@@ -6,4 +6,5 @@ import lombok.Data;
 public class DataRequest {
     private String name;
     private String surname;
+    private Long userId;
 }
