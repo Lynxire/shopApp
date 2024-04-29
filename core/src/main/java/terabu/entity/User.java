@@ -2,6 +2,9 @@ package terabu.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import terabu.entity.status.Role;
+
+import java.time.LocalDate;
 
 @Entity
 @Data
@@ -14,7 +17,11 @@ public class User {
     private String login;
     private String email;
     private String password;
+    @Column(name = "data_registration")
+    private LocalDate dateRegistration;
     @Enumerated(EnumType.STRING)
     private Role role;
+
+
 
 }

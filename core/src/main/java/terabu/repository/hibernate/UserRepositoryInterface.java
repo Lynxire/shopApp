@@ -1,4 +1,4 @@
-package terabu.repository;
+package terabu.repository.hibernate;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import terabu.entity.User;

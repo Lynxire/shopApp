@@ -1,29 +1,27 @@
-package terabu.repository.impl;
+package terabu.repository.hibernate.impl;
 
-import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.query.Query;
-import terabu.config.HibernateConnection;
-import terabu.config.HibernateJavaConfig;
+import org.springframework.stereotype.Repository;
 import terabu.entity.User;
-import terabu.repository.UserRepositoryInterface;
+import terabu.repository.hibernate.UserRepositoryInterface;
 
 import java.util.List;
-
+@Repository
+@RequiredArgsConstructor
 public class UserRepositoryImpl implements UserRepositoryInterface {
+
     private final SessionFactory sessionFactory;
 
-    public UserRepositoryImpl(){
-        sessionFactory = HibernateJavaConfig.getSessionFactory();
-    }
     @Override
     public void add(User user) {
-        EntityManager entityManager = HibernateConnection.getEntityManager();
-        entityManager.getTransaction().begin();
-        entityManager.persist(user);
-        entityManager.getTransaction().commit();
-        entityManager.close();
+//        EntityManager entityManager = HibernateConnection.getEntityManager();
+//        entityManager.getTransaction().begin();
+//        entityManager.persist(user);
+//        entityManager.getTransaction().commit();
+//        entityManager.close();
     }
 
     @Override
