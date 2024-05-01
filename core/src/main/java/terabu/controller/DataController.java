@@ -1,5 +1,6 @@
 package terabu.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,6 +13,7 @@ import terabu.service.DataService;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("data")
+@Tag(name = "Контроллер для доп. информации пользователя")
 public class DataController {
     private final DataService dataService;
     @PostMapping("/update")
