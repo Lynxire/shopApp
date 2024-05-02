@@ -36,11 +36,11 @@ public class BucketService {
         goodsById.setCount(goods1Count-count);
         Goods goods = goodsRepository.save(goodsById);
 
-        User user1 = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
-        Order order = orderRepository.findByUserAndStatus(user1, OrderStatus.CREATE).orElseGet
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseGet
                 (() -> {
                     Order newOrder = new Order();
-                    newOrder.setUser(user1);
+                    newOrder.setUser(user);
                     newOrder.setStatus(OrderStatus.CREATE);
                     return orderRepository.save(newOrder);
                 });

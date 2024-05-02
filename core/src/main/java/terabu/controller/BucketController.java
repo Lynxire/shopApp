@@ -14,6 +14,7 @@ import terabu.service.BucketService;
 @Tag(name = "Контроллер для корзины")
 public class BucketController {
     private final BucketService bucketService;
+    @Operation(summary = "Добавление в корзину товаров", description = "Добавляет товары в корзину и создает заказ, если у текущего пользователя нету существующего")
     @PostMapping("/add")
     public BucketResponse addOrderAndGoodsByBucket(@RequestBody BucketRequest bucketRequest){
         Long userId = bucketRequest.getUserId();
