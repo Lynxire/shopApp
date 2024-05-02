@@ -3,6 +3,7 @@ package terabu.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import terabu.dto.bucket.BucketRequest;
 import terabu.dto.bucket.BucketResponse;
 import terabu.entity.Bucket;
 import terabu.entity.Goods;
@@ -27,16 +28,16 @@ public class BucketService {
     private final UserRepositorySpringData userRepository;
 
     @Transactional
-    public BucketResponse addOrderAndGoodsByBucket(Long userId, Long goodsId, Long count) {
-        Goods goodsById = goodsRepository.findById(goodsId).orElseThrow(() -> new RuntimeException("Такого товара нету"));
-        if(goodsById.getCount() <= 0 || goodsById.getCount() < count){
+    public BucketResponse addOrderAndGoodsByBucket(BucketRequest bucketRequest) {
+        Goods goodsById = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new RuntimeException("Такого товара нету"));
+        if(goodsById.getCount() <= 0 || goodsById.getCount() < bucketRequest.getCount()){
             throw new RuntimeException ("Товар закончился или привышено кол-во доступных товаров");
         }
         Long goods1Count = goodsById.getCount();
-        goodsById.setCount(goods1Count-count);
+        goodsById.setCount(goods1Count-bucketRequest.getCount());
         Goods goods = goodsRepository.save(goodsById);
 
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
+        User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseGet
                 (() -> {
                     Order newOrder = new Order();
@@ -46,10 +47,10 @@ public class BucketService {
                 });
 
 
-        Long sum = goods.getPrice() * count;
+        Long sum = goods.getPrice() * bucketRequest.getCount();
 
         Bucket bucket = new Bucket();
-        bucket.setCount(count);
+        bucket.setCount(bucketRequest.getCount());
         bucket.setSum(sum);
         bucket.setOrders(Collections.singletonList(order));
         bucket.setGoods(Collections.singletonList(goods));

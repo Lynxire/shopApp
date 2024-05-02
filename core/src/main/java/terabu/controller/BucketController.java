@@ -17,9 +17,6 @@ public class BucketController {
     @Operation(summary = "Добавление в корзину товаров", description = "Добавляет товары в корзину и создает заказ, если у текущего пользователя нету существующего")
     @PostMapping("/add")
     public BucketResponse addOrderAndGoodsByBucket(@RequestBody BucketRequest bucketRequest){
-        Long userId = bucketRequest.getUserId();
-        Long goodsId = bucketRequest.getGoodsId();
-        Long goodsCount = bucketRequest.getCount();
-        return bucketService.addOrderAndGoodsByBucket(userId, goodsId, goodsCount);
+        return bucketService.addOrderAndGoodsByBucket(bucketRequest);
     }
 }
