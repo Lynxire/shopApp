@@ -1,5 +1,6 @@
 package terabu.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,6 +18,7 @@ import terabu.service.UserDataService;
 public class UserDataController {
     private final UserDataService userDataService;
     @PostMapping("/update")
+    @Operation(summary = "Обновление личной информации пользователя")
     public UserDataResponse updateData(@RequestBody UserDataRequest userDataRequest){
         return userDataService.update(userDataRequest);
     }
