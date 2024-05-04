@@ -6,18 +6,18 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import terabu.dto.data.DataRequest;
-import terabu.dto.data.DataResponse;
-import terabu.service.DataService;
+import terabu.dto.data.UserDataRequest;
+import terabu.dto.data.UserDataResponse;
+import terabu.service.UserDataService;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("data")
 @Tag(name = "Контроллер для доп. информации пользователя")
-public class DataController {
-    private final DataService dataService;
+public class UserDataController {
+    private final UserDataService userDataService;
     @PostMapping("/update")
-    public DataResponse updateData(@RequestBody DataRequest dataRequest){
-        return dataService.update(dataRequest);
+    public UserDataResponse updateData(@RequestBody UserDataRequest userDataRequest){
+        return userDataService.update(userDataRequest);
     }
 }
