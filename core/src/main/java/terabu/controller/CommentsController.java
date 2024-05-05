@@ -25,8 +25,8 @@ public class CommentsController {
 
     @Operation(summary = "Удалить комментарий")
     @PostMapping("/delete")
-    public void deleteComment(@RequestBody CommentRequest commentRequest) {
-        commentService.deleteComment(commentRequest);
+    public void deleteComment(@RequestParam Long commentId) {
+        commentService.deleteComment(commentId);
     }
 
     @Operation(summary = "Комментарии пользователя", description = "Данный метод отвечает за просмотр своих комментариев пользователю")

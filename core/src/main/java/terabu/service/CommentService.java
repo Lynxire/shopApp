@@ -30,11 +30,9 @@ public class CommentService {
         return commentMapper.toResponse(comments);
     }
 
-    public void deleteComment(CommentRequest commentRequest) {
-        User user = userRepository.findById(commentRequest.getUserId()).get();
-        Comments comments = commentMapper.toEntity(commentRequest);
-        comments.setUser(user);
-        commentsRepository.delete(comments);
+    public void deleteComment(Long commentId) {
+        commentsRepository.findById(commentId).ifPresent(commentsRepository::delete);
+
     }
 
     public List<CommentResponse> getCommentByUser(Long userId) {

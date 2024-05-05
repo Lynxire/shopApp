@@ -6,6 +6,6 @@ import terabu.entity.Comments;
 import java.util.List;
 import java.util.Optional;
 
-public interface CommentsRepository extends JpaRepository<Comments, Integer> {
+public interface CommentsRepository extends JpaRepository<Comments, Long> {
     public List<Comments> findAllByUserId(Long userId);
 }
