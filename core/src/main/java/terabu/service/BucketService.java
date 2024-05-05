@@ -3,12 +3,14 @@ package terabu.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import terabu.dto.bucket.BucketRequest;
 import terabu.dto.bucket.BucketResponse;
 import terabu.entity.Bucket;
 import terabu.entity.Goods;
 import terabu.entity.Order;
 import terabu.entity.User;
 import terabu.entity.status.OrderStatus;
+import terabu.logger.LoggerAnnotation;
 import terabu.mapper.BucketMapper;
 import terabu.repository.BucketRepository;
 import terabu.repository.GoodsRepository;
@@ -17,6 +19,7 @@ import terabu.repository.UserRepositorySpringData;
 
 import java.util.Collections;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class BucketService {
@@ -26,30 +29,30 @@ public class BucketService {
     private final OrderRepository orderRepository;
     private final UserRepositorySpringData userRepository;
 
-    @Transactional
-    public BucketResponse addOrderAndGoodsByBucket(Long userId, Long goodsId, Long count) {
-        Goods goodsById = goodsRepository.findById(goodsId).orElseThrow(() -> new RuntimeException("Такого товара нету"));
-        if(goodsById.getCount() <= 0 || goodsById.getCount() < count){
-            throw new RuntimeException ("Товар закончился или привышено кол-во доступных товаров");
+    @LoggerAnnotation
+    public BucketResponse addOrderAndGoodsByBucket(BucketRequest bucketRequest) {
+        Goods goodsById = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new RuntimeException("Такого товара нету"));
+        if (goodsById.getCount() <= 0 || goodsById.getCount() < bucketRequest.getCount()) {
+            throw new RuntimeException("Товар закончился или привышено кол-во доступных товаров");
         }
         Long goods1Count = goodsById.getCount();
-        goodsById.setCount(goods1Count-count);
+        goodsById.setCount(goods1Count - bucketRequest.getCount());
         Goods goods = goodsRepository.save(goodsById);
 
-        User user1 = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
-        Order order = orderRepository.findByUserAndStatus(user1, OrderStatus.CREATE).orElseGet
+        User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseGet
                 (() -> {
                     Order newOrder = new Order();
-                    newOrder.setUser(user1);
+                    newOrder.setUser(user);
                     newOrder.setStatus(OrderStatus.CREATE);
                     return orderRepository.save(newOrder);
                 });
 
 
-        Long sum = goods.getPrice() * count;
+        Long sum = goods.getPrice() * bucketRequest.getCount();
 
         Bucket bucket = new Bucket();
-        bucket.setCount(count);
+        bucket.setCount(bucketRequest.getCount());
         bucket.setSum(sum);
         bucket.setOrders(Collections.singletonList(order));
         bucket.setGoods(Collections.singletonList(goods));
@@ -59,8 +62,6 @@ public class BucketService {
 
 
     }
-
-
 
 
 }

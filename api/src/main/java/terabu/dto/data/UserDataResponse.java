@@ -3,8 +3,7 @@ package terabu.dto.data;
 import lombok.Data;
 
 @Data
-public class DataRequest {
+public class UserDataResponse {
     private String name;
     private String surname;
-    private Long userId;
 }

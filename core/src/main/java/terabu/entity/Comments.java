@@ -12,7 +12,7 @@ public class Comments {
     private Long id;
     private String comments;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne()
     @JoinColumn(name = "userId")
     private User user;
 }
