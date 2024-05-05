@@ -18,7 +18,7 @@ import terabu.service.UserDataService;
 public class UserDataController {
     private final UserDataService userDataService;
     @PostMapping("/update")
-    @Operation(summary = "Обновление личной информации пользователя")
+    @Operation(summary = "Обновление личной информации пользователя", description = "Данный метод для обновления личной информации и данных для входа")
     public UserDataResponse updateData(@RequestBody UserDataRequest userDataRequest){
         return userDataService.update(userDataRequest);
     }
