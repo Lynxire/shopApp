@@ -34,5 +34,10 @@ public class CommentsController {
     public List<CommentResponse> getMyComments(@RequestParam Long userId) {
         return commentService.getCommentByUser(userId);
     }
+    @Operation(summary = "Все комментарии")
+    @GetMapping("/allComments")
+    public List<CommentResponse> getAllComments() {
+        return commentService.getAllComments();
+    }
 
 }
