@@ -17,7 +17,10 @@ import terabu.repository.GoodsRepository;
 import terabu.repository.OrderRepository;
 import terabu.repository.UserRepositorySpringData;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
+import java.util.stream.Stream;
 
 @Transactional
 @Service
@@ -63,10 +66,42 @@ public class BucketService {
 
     public void completeBucket(Long userId) {
         User user = userRepository.findById(userId).get();
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Нету заказов"));
         order.setStatus(OrderStatus.COMPLETE);
         orderRepository.save(order);
     }
+
+    public void cleanBucket(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Нету заказов"));
+        List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
+        bucketRepository.deleteAll(bucketList);
+    }
+
+    public void removeGoodsByBucket(BucketRequest bucketRequest) {
+        User user = userRepository.findById(bucketRequest.getUserId()).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Нету заказов"));
+        Bucket bucket = bucketRepository.findByGoodsIdAndOrdersId(bucketRequest.getGoodsId(), order.getId());
+        bucketRepository.delete(bucket);
+    }
+
+    public List<BucketResponse> getBucketByUserId(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
+        List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
+        List<BucketResponse> bucketResponseList = new ArrayList<>();
+        bucketList.forEach(bucket -> {
+            BucketResponse bucketResponse = mapper.toResponse(bucket);
+            List<Goods> goodsList = bucket.getGoods().stream().toList();
+            goodsList.forEach(goods -> {
+                bucketResponse.setNameGoods(goods.getName());
+                bucketResponseList.add(bucketResponse);
+            });
+        });
+
+        return bucketResponseList;
+    }
+
 
 
 }

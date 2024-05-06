@@ -14,7 +14,7 @@ public class Order {
     private Long id;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    @ManyToOne(cascade = CascadeType.REMOVE)
+    @ManyToOne()
     @JoinColumn(name = "userId")
     private User user;
 
