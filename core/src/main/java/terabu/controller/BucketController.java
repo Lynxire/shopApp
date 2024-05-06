@@ -19,4 +19,10 @@ public class BucketController {
     public BucketResponse addOrderAndGoodsByBucket(@RequestBody BucketRequest bucketRequest){
         return bucketService.addOrderAndGoodsByBucket(bucketRequest);
     }
+
+    @Operation(summary = "Оформление заказа в корзине")
+    @PostMapping("/complete")
+    public void completeBucket(@RequestParam Long userId){
+        bucketService.completeBucket(userId);
+    }
 }

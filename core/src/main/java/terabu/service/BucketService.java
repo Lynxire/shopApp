@@ -59,8 +59,13 @@ public class BucketService {
 
         bucketRepository.save(bucket);
         return mapper.toResponse(bucket);
+    }
 
-
+    public void completeBucket(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
+        order.setStatus(OrderStatus.COMPLETE);
+        orderRepository.save(order);
     }
 
 
