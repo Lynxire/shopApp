@@ -16,7 +16,7 @@ public class Goods {
     private Long id;
     private String name;
     private Long count;
-    private Long price;
+    private Double price;
     @Enumerated(EnumType.STRING)
     private GoodsType type;
 }

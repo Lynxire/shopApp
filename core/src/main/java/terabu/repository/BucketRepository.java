@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface BucketRepository extends JpaRepository<Bucket, Long> {
     public List<Bucket> findAllByOrdersId(Long orderId);
-    public Bucket findByGoodsIdAndOrdersId(Long goodsId, Long orderId);
+    public List<Bucket> findByGoodsIdAndOrdersId(Long goodsId, Long orderId);
 }

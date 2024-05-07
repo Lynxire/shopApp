@@ -17,7 +17,7 @@ public class Bucket {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private Long count;
-    private Long sum;
+    private Double sum;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(schema = "app", name = "bucket_goods",
