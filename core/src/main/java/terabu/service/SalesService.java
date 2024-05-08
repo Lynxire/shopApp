@@ -1,5 +1,6 @@
 package terabu.service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import terabu.entity.Sales;
@@ -9,6 +10,7 @@ import terabu.repository.SalesRepository;
 import terabu.repository.UserDataRepository;
 import terabu.repository.UserRepositorySpringData;
 
+@Transactional
 @Service
 @RequiredArgsConstructor
 public class SalesService {
@@ -25,7 +27,7 @@ public class SalesService {
         Sales sales = salesRepository.findByUserId(userId).orElseGet(() ->
                 {
                     Sales newSales = new Sales();
-                    newSales.setName("Personal sales");
+                    newSales.setName("Personal sales: " + userData.getName());
                     User user = repositorySpringData.findById(userId).get();
                     newSales.setUser(user);
                     newSales.setSum(1L);

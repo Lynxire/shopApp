@@ -7,6 +7,8 @@ import terabu.dto.bucket.BucketRequest;
 import terabu.dto.bucket.BucketResponse;
 import terabu.entity.*;
 import terabu.entity.status.OrderStatus;
+import terabu.exception.goods.GoodsNotFoundException;
+import terabu.exception.orders.OrdersNotFoundException;
 import terabu.logger.LoggerAnnotation;
 import terabu.mapper.BucketMapper;
 import terabu.repository.*;
@@ -14,7 +16,6 @@ import terabu.repository.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Transactional
 @Service
@@ -30,7 +31,7 @@ public class BucketService {
 
     @LoggerAnnotation
     public BucketResponse addOrderAndGoodsByBucket(BucketRequest bucketRequest) {
-        Goods goodsById = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new RuntimeException("Такого товара нету"));
+        Goods goodsById = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new GoodsNotFoundException("Такого товара нету"));
         if (goodsById.getCount() <= 0 || goodsById.getCount() < bucketRequest.getCount()) {
             throw new RuntimeException("Товар закончился или привышено кол-во доступных товаров");
         }
@@ -63,7 +64,7 @@ public class BucketService {
 
     public void completeBucket(Long userId) {
         User user = userRepository.findById(userId).get();
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Нету заказов"));
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         order.setStatus(OrderStatus.COMPLETE);
         UserData userData = userDataRepository.findByUserId(userId);
         Long ordersData = userData.getOrders();
@@ -74,7 +75,7 @@ public class BucketService {
 
     public void cleanBucket(Long userId) {
         User user = userRepository.findById(userId).get();
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Нету заказов"));
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
         bucketList.forEach(bucket -> {
             List<Goods> goods = bucket.getGoods();
@@ -90,7 +91,7 @@ public class BucketService {
 
     public void removeGoodsByBucket(BucketRequest bucketRequest) {
         User user = userRepository.findById(bucketRequest.getUserId()).get();
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Нету заказов"));
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         List<Bucket> bucketList = bucketRepository.findByGoodsIdAndOrdersId(bucketRequest.getGoodsId(), order.getId());
         bucketList.forEach(bucket -> {
                     Goods goods = goodsRepository.findById(bucketRequest.getGoodsId()).get();
