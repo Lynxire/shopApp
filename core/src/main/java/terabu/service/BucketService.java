@@ -27,6 +27,7 @@ public class BucketService {
     private final OrderRepository orderRepository;
     private final UserRepositorySpringData userRepository;
     private final DiscountService discountService;
+    private final StocksService stocksService;
     private final UserDataRepository userDataRepository;
 
     @LoggerAnnotation
@@ -48,10 +49,16 @@ public class BucketService {
                     return orderRepository.save(newOrder);
                 });
 
+        Long discountPercent = 0L;
+        if(stocksService.calculateStocks(bucketRequest.getGoodsId()) != null ){
+            discountPercent = stocksService.calculateStocks(bucketRequest.getGoodsId());
+        }
+        else {
+            discountPercent = discountService.calculatingDiscount(bucketRequest.getUserId());
+        }
 
-        Long discount = discountService.calculatingDiscount(bucketRequest.getUserId());
-        Double sales = (goods.getPrice() * bucketRequest.getCount()) * discount / 100;
-        Double sum = (goods.getPrice() * bucketRequest.getCount()) - sales;
+        Double discount = (goods.getPrice() * bucketRequest.getCount()) * discountPercent / 100;
+        Double sum = (goods.getPrice() * bucketRequest.getCount()) - discount;
         Bucket bucket = new Bucket();
         bucket.setCount(bucketRequest.getCount());
         bucket.setSum(sum);

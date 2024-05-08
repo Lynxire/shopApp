@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import terabu.exception.goods.GoodsNotFoundException;
 import terabu.exception.orders.OrdersNotFoundException;
+import terabu.exception.stocks.StocksNotFoundException;
 
 @Slf4j
 @ControllerAdvice
@@ -20,6 +21,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(OrdersNotFoundException.class)
     public ResponseEntity<String> handleResourceNotFoundException(OrdersNotFoundException ex) {
+        log.error(ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(StocksNotFoundException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(StocksNotFoundException ex) {
         log.error(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.getMessage());
     }

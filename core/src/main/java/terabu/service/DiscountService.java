@@ -18,10 +18,6 @@ public class DiscountService {
     private final UserDataRepository userDataRepository;
     private final UserRepositorySpringData repositorySpringData;
 
-    public Discount addSales(Discount discount) {
-        return salesRepository.save(discount);
-    }
-
     public Long calculatingDiscount(Long userId) {
         UserData userData = userDataRepository.findByUserId(userId);
         Discount discount = salesRepository.findByUserId(userId).orElseGet(() ->
