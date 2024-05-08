@@ -3,7 +3,7 @@ package terabu.service;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import terabu.entity.Sales;
+import terabu.entity.Discount;
 import terabu.entity.User;
 import terabu.entity.UserData;
 import terabu.repository.SalesRepository;
@@ -13,26 +13,26 @@ import terabu.repository.UserRepositorySpringData;
 @Transactional
 @Service
 @RequiredArgsConstructor
-public class SalesService {
+public class DiscountService {
     private final SalesRepository salesRepository;
     private final UserDataRepository userDataRepository;
     private final UserRepositorySpringData repositorySpringData;
 
-    public Sales addSales(Sales sales) {
-        return salesRepository.save(sales);
+    public Discount addSales(Discount discount) {
+        return salesRepository.save(discount);
     }
 
     public Long calculatingDiscount(Long userId) {
         UserData userData = userDataRepository.findByUserId(userId);
-        Sales sales = salesRepository.findByUserId(userId).orElseGet(() ->
+        Discount discount = salesRepository.findByUserId(userId).orElseGet(() ->
                 {
-                    Sales newSales = new Sales();
-                    newSales.setName("Personal sales: " + userData.getName());
+                    Discount newDiscount = new Discount();
+                    newDiscount.setName("Personal sales: " + userData.getName());
                     User user = repositorySpringData.findById(userId).get();
-                    newSales.setUser(user);
-                    newSales.setSum(1L);
-                    salesRepository.save(newSales);
-                    return newSales;
+                    newDiscount.setUser(user);
+                    newDiscount.setSum(1L);
+                    salesRepository.save(newDiscount);
+                    return newDiscount;
                 }
         );
         if (userData.getOrders() == null) {
@@ -40,20 +40,20 @@ public class SalesService {
         }
 
         if (userData.getOrders() >= 30) {
-            sales.setSum(15L);
-            salesRepository.save(sales);
-            return sales.getSum();
+            discount.setSum(15L);
+            salesRepository.save(discount);
+            return discount.getSum();
         }
         if (userData.getOrders() >= 20) {
-            sales.setSum(10L);
-            salesRepository.save(sales);
-            return sales.getSum();
+            discount.setSum(10L);
+            salesRepository.save(discount);
+            return discount.getSum();
         }
         if (userData.getOrders() >= 10) {
-            sales.setSum(5L);
-            salesRepository.save(sales);
-            return sales.getSum();
+            discount.setSum(5L);
+            salesRepository.save(discount);
+            return discount.getSum();
         }
-        return sales.getSum();
+        return discount.getSum();
     }
 }
