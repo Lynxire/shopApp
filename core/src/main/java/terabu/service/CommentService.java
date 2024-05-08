@@ -14,6 +14,7 @@ import terabu.repository.UserRepositorySpringData;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiredArgsConstructor
 @Service
@@ -42,6 +43,19 @@ public class CommentService {
         list.forEach(comments -> {
             CommentResponse commentResponse = commentMapper.toResponse(comments);
             commentResponse.setName(data.getName());
+            responses.add(commentResponse);
+        });
+
+        return responses;
+    }
+    public List<CommentResponse> getAllComments(){
+        List<Comments> list = commentsRepository.findAll();
+        List<CommentResponse> responses = new ArrayList<>();
+        list.forEach(comments -> {
+            User user = comments.getUser();
+            UserData userData = userDataRepository.findByUserId(user.getId());
+            CommentResponse commentResponse = commentMapper.toResponse(comments);
+            commentResponse.setName(userData.getName());
             responses.add(commentResponse);
         });
 

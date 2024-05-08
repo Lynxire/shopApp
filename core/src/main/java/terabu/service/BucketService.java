@@ -5,19 +5,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.bucket.BucketRequest;
 import terabu.dto.bucket.BucketResponse;
-import terabu.entity.Bucket;
-import terabu.entity.Goods;
-import terabu.entity.Order;
-import terabu.entity.User;
+import terabu.entity.*;
 import terabu.entity.status.OrderStatus;
+import terabu.exception.goods.GoodsNotFoundException;
+import terabu.exception.orders.OrdersNotFoundException;
 import terabu.logger.LoggerAnnotation;
 import terabu.mapper.BucketMapper;
-import terabu.repository.BucketRepository;
-import terabu.repository.GoodsRepository;
-import terabu.repository.OrderRepository;
-import terabu.repository.UserRepositorySpringData;
+import terabu.repository.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 @Transactional
 @Service
@@ -28,10 +26,12 @@ public class BucketService {
     private final GoodsRepository goodsRepository;
     private final OrderRepository orderRepository;
     private final UserRepositorySpringData userRepository;
+    private final SalesService salesService;
+    private final UserDataRepository userDataRepository;
 
     @LoggerAnnotation
     public BucketResponse addOrderAndGoodsByBucket(BucketRequest bucketRequest) {
-        Goods goodsById = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new RuntimeException("Такого товара нету"));
+        Goods goodsById = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new GoodsNotFoundException("Такого товара нету"));
         if (goodsById.getCount() <= 0 || goodsById.getCount() < bucketRequest.getCount()) {
             throw new RuntimeException("Товар закончился или привышено кол-во доступных товаров");
         }
@@ -49,8 +49,9 @@ public class BucketService {
                 });
 
 
-        Long sum = goods.getPrice() * bucketRequest.getCount();
-
+        Long discount = salesService.calculatingDiscount(bucketRequest.getUserId());
+        Double sales = (goods.getPrice() * bucketRequest.getCount()) * discount / 100;
+        Double sum = (goods.getPrice() * bucketRequest.getCount()) - sales;
         Bucket bucket = new Bucket();
         bucket.setCount(bucketRequest.getCount());
         bucket.setSum(sum);
@@ -59,8 +60,62 @@ public class BucketService {
 
         bucketRepository.save(bucket);
         return mapper.toResponse(bucket);
+    }
 
+    public void completeBucket(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
+        order.setStatus(OrderStatus.COMPLETE);
+        UserData userData = userDataRepository.findByUserId(userId);
+        Long ordersData = userData.getOrders();
+        userData.setOrders(ordersData + 1);
+        userDataRepository.save(userData);
+        orderRepository.save(order);
+    }
 
+    public void cleanBucket(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
+        List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
+        bucketList.forEach(bucket -> {
+            List<Goods> goods = bucket.getGoods();
+            goods.forEach(goodsId -> {
+                Goods goodsCount = goodsRepository.findById(goodsId.getId()).get();
+                goodsCount.setCount(goodsCount.getCount() + bucket.getCount());
+            });
+
+        });
+
+        bucketRepository.deleteAll(bucketList);
+    }
+
+    public void removeGoodsByBucket(BucketRequest bucketRequest) {
+        User user = userRepository.findById(bucketRequest.getUserId()).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
+        List<Bucket> bucketList = bucketRepository.findByGoodsIdAndOrdersId(bucketRequest.getGoodsId(), order.getId());
+        bucketList.forEach(bucket -> {
+                    Goods goods = goodsRepository.findById(bucketRequest.getGoodsId()).get();
+                    goods.setCount(goods.getCount() + bucket.getCount());
+                }
+        );
+        bucketRepository.deleteAll(bucketList);
+    }
+
+    public List<BucketResponse> getBucketByUserId(Long userId) {
+        User user = userRepository.findById(userId).get();
+        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
+        List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
+        List<BucketResponse> bucketResponseList = new ArrayList<>();
+        bucketList.forEach(bucket -> {
+            BucketResponse bucketResponse = mapper.toResponse(bucket);
+            List<Goods> goodsList = bucket.getGoods().stream().toList();
+            goodsList.forEach(goods -> {
+                bucketResponse.setNameGoods(goods.getName());
+                bucketResponseList.add(bucketResponse);
+            });
+        });
+
+        return bucketResponseList;
     }
 
 

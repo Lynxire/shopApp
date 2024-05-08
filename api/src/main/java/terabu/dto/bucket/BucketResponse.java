@@ -7,6 +7,7 @@ import java.util.List;
 @Data
 public class BucketResponse {
     private Long id;
+    private String nameGoods;
     private Long count;
-    private Long sum;
+    private Double sum;
 }

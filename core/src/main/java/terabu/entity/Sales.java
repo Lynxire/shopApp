@@ -12,11 +12,9 @@ public class Sales {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private LocalDate beginDate;
-    private LocalDate endDate;
-    private Long count;
+    private Long sum;
 
     @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "goodsId")
-    private Goods goods;
+    @JoinColumn(name = "user_id")
+    private User user;
 }

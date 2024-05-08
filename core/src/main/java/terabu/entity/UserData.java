@@ -11,6 +11,7 @@ public class UserData {
     private Long id;
     private String name;
     private String surname;
+    private Long orders;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")

@@ -8,6 +8,8 @@ import terabu.dto.bucket.BucketRequest;
 import terabu.dto.bucket.BucketResponse;
 import terabu.service.BucketService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("bucket")
@@ -18,5 +20,29 @@ public class BucketController {
     @PostMapping("/add")
     public BucketResponse addOrderAndGoodsByBucket(@RequestBody BucketRequest bucketRequest){
         return bucketService.addOrderAndGoodsByBucket(bucketRequest);
+    }
+
+    @Operation(summary = "Оформление заказа в корзине")
+    @PostMapping("/complete")
+    public void completeBucket(@RequestParam Long userId){
+        bucketService.completeBucket(userId);
+    }
+
+    @Operation(summary = "Очистка корзины")
+    @PostMapping("/clear")
+    public void clearBucket(@RequestParam Long userId){
+        bucketService.cleanBucket(userId);
+    }
+
+    @Operation(summary = "Удаление товара из заказа")
+    @PostMapping("/removeGoods")
+    public void removeGoods(@RequestBody BucketRequest bucketRequest){
+        bucketService.removeGoodsByBucket(bucketRequest);
+    }
+
+    @Operation(summary = "Возвращает заказы и товары в корзину пользователю")
+    @GetMapping()
+    public List<BucketResponse> getBucket(@RequestParam Long userId){
+        return bucketService.getBucketByUserId(userId);
     }
 }
