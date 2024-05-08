@@ -26,7 +26,7 @@ public class BucketService {
     private final GoodsRepository goodsRepository;
     private final OrderRepository orderRepository;
     private final UserRepositorySpringData userRepository;
-    private final SalesService salesService;
+    private final DiscountService discountService;
     private final UserDataRepository userDataRepository;
 
     @LoggerAnnotation
@@ -49,7 +49,7 @@ public class BucketService {
                 });
 
 
-        Long discount = salesService.calculatingDiscount(bucketRequest.getUserId());
+        Long discount = discountService.calculatingDiscount(bucketRequest.getUserId());
         Double sales = (goods.getPrice() * bucketRequest.getCount()) * discount / 100;
         Double sum = (goods.getPrice() * bucketRequest.getCount()) - sales;
         Bucket bucket = new Bucket();

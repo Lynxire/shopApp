@@ -3,11 +3,10 @@ package terabu.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-import java.time.LocalDate;
 @Data
 @Entity
 @Table(schema = "app", name = "sales")
-public class Sales {
+public class Discount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
