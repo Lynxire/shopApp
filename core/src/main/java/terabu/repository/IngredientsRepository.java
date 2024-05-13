@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IngredientsRepository extends JpaRepository<Ingredients, Long> {
-    public Optional<Ingredients> findByIdIn(List<Long> ids);
+    public List<Ingredients> findByIdIn(List<Long> ids);
     public Ingredients findByName(String name);
 }

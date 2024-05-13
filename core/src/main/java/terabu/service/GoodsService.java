@@ -6,7 +6,10 @@ import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.goods.GoodsRequest;
 import terabu.dto.goods.GoodsResponse;
 import terabu.entity.*;
+import terabu.exception.goods.GoodsAlreadyExistException;
 import terabu.exception.goods.GoodsNotFoundException;
+import terabu.exception.ingredients.IngredientsAlreadyExistException;
+import terabu.exception.ingredients.IngredientsNotAllowedValueException;
 import terabu.exception.ingredients.IngredientsNotFoundException;
 import terabu.mapper.GoodsMapper;
 import terabu.repository.GoodsRepository;
@@ -14,7 +17,9 @@ import terabu.repository.IngredientsRepository;
 
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 @Service
@@ -27,19 +32,23 @@ public class GoodsService {
 
 
     public GoodsResponse save(GoodsRequest goodsRequest) {
-        List<Long> listIngredientsIdRequest = goodsRequest.getIngredientsId();
-        listIngredientsIdRequest.forEach(ingredientsIdRequest -> {
-            Ingredients ingredientsBD = ingredientsRepository.findById(ingredientsIdRequest).get();
-            goodsRequest.getIngredientsQuality().forEach(quality -> {
-               if(ingredientsBD.getQuantity() < quality || ingredientsBD.getQuantity() < 0) {
-                   throw new IngredientsNotFoundException("Ингредиенты закончились или привышено кол-во доступных ингредиентов");
-               }
-               else {
-                   ingredientsBD.setQuantity(ingredientsBD.getQuantity() - quality);
-               }
-            });
-        });
         Goods goods = goodsMapper.toEntity(goodsRequest);
+        List<Ingredients> ingredientsList = ingredientsRepository.findByIdIn(goodsRequest.getIngredientsId());
+        ingredientsList.forEach(ingredients -> {
+            int count = 0;
+            count = (int) (ingredients.getId() - 1);
+            if(ingredients.getQuantity() < goodsRequest.getIngredientsQuality().get(count) || ingredients.getQuantity() < 0){
+                throw new IngredientsNotAllowedValueException("Недостаточно ингредиентов");
+            }
+            ingredients.setQuantity(ingredients.getQuantity() - goodsRequest.getIngredientsQuality().get(count));
+        });
+        goods.setIngredients(ingredientsList);
+
+        Optional<Goods> optionalGoods = goodsRepository.findByName(goodsRequest.getName());
+        if(optionalGoods.isPresent()){
+            throw new GoodsAlreadyExistException("С таким именем уже существует товар");
+        }
+
         goodsRepository.save(goods);
         return goodsMapper.toResponse(goods);
 

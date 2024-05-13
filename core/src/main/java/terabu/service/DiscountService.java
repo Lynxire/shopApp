@@ -15,22 +15,23 @@ import terabu.repository.UserRepositorySpringData;
 @RequiredArgsConstructor
 public class DiscountService {
     private final SalesRepository salesRepository;
+    private final UserRepositorySpringData userRepository;
     private final UserDataRepository userDataRepository;
-    private final UserRepositorySpringData repositorySpringData;
 
     public Long calculatingDiscount(Long userId) {
         UserData userData = userDataRepository.findByUserId(userId);
         Discount discount = salesRepository.findByUserId(userId).orElseGet(() ->
                 {
                     Discount newDiscount = new Discount();
-                    newDiscount.setName("Personal sales: " + userData.getName());
-                    User user = repositorySpringData.findById(userId).get();
+                    User user = userRepository.findById(userId).get();
+                    newDiscount.setName("Personal sales: " + user.getLogin());
                     newDiscount.setUser(user);
                     newDiscount.setSum(1L);
                     salesRepository.save(newDiscount);
                     return newDiscount;
                 }
         );
+
         if (userData.getOrders() == null) {
             userData.setOrders(0L);
         }
