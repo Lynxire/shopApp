@@ -36,6 +36,10 @@ public class StocksService {
 
     public Long calculateStocks(Long goodsId){
         Stocks stocks = stocksRepository.findById(goodsId).orElse(null);
+        if(stocks == null){
+            return null;
+        }
+
         if(stocks.getEndDate().isAfter(LocalDate.now()) || stocks.getEndDate().isEqual(LocalDate.now())){
             return stocks.getSum();
         }
