@@ -48,17 +48,28 @@ public class CommentService {
 
         return responses;
     }
-    public List<CommentResponse> getAllComments(){
-        List<Comments> list = commentsRepository.findAll();
-        List<CommentResponse> responses = new ArrayList<>();
-        list.forEach(comments -> {
-            User user = comments.getUser();
-            UserData userData = userDataRepository.findByUserId(user.getId());
-            CommentResponse commentResponse = commentMapper.toResponse(comments);
-            commentResponse.setName(userData.getName());
-            responses.add(commentResponse);
-        });
 
-        return responses;
+//    Пагинацичя
+    public List<CommentResponse> getAllComments(){
+        List<Comments> commentsList = commentsRepository.findAll();
+////        List<CommentResponse> responses = new ArrayList<>();
+//        commentsList.forEach(comments -> {
+//            User user = comments.getUser();
+//            UserData userData = userDataRepository.findByUserId(user.getId());
+//            CommentResponse commentResponse = commentMapper.toResponse(comments);
+//            commentResponse.setName(userData.getName());
+//            responses.add(commentResponse);
+//        });
+//        return responses;
+
+        return commentsList.stream().map(comments ->{
+            CommentResponse commentResponse = commentMapper.toResponse(comments);
+            UserData userData = userDataRepository.findByUserId(comments.getUser().getId());
+            commentResponse.setName(userData.getName());
+            return commentResponse;
+        }).toList();
+
+
+
     }
 }
