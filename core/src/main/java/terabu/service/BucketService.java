@@ -34,7 +34,7 @@ public class BucketService {
     public BucketResponse addOrderAndGoodsByBucket(BucketRequest bucketRequest) {
         Goods goodsById = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new GoodsNotFoundException("Такого товара нету"));
         if (goodsById.getCount() <= 0 || goodsById.getCount() < bucketRequest.getCount()) {
-            throw new RuntimeException("Товар закончился или привышено кол-во доступных товаров");
+            throw new GoodsNotFoundException("Товар закончился или привышено кол-во доступных товаров");
         }
         Long goods1Count = goodsById.getCount();
         goodsById.setCount(goods1Count - bucketRequest.getCount());
@@ -115,15 +115,21 @@ public class BucketService {
         User user = userRepository.findById(userId).get();
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
         List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
-        List<BucketResponse> bucketResponseList = new ArrayList<>();
-        bucketList.forEach(bucket -> {
-            BucketResponse bucketResponse = mapper.toResponse(bucket);
-            List<Goods> goodsList = bucket.getGoods().stream().toList();
-            goodsList.forEach(goods -> {
-                bucketResponse.setNameGoods(goods.getName());
-                bucketResponseList.add(bucketResponse);
-            });
-        });
+        List<BucketResponse> bucketResponseList = bucketList.stream().map(bucket -> {
+            BucketResponse response = mapper.toResponse(bucket);
+            bucket.getGoods().forEach(good -> response.setNameGoods(good.getName()));
+            return response;
+        }).toList();
+//
+//        List<BucketResponse> bucketResponseList = new ArrayList<>();
+//        bucketList.forEach(bucket -> {
+//            BucketResponse bucketResponse = mapper.toResponse(bucket);
+//            List<Goods> goodsList = bucket.getGoods().stream().toList();
+//            goodsList.forEach(goods -> {
+//                bucketResponse.setNameGoods(goods.getName());
+//                bucketResponseList.add(bucketResponse);
+//            });
+//        });
 
         return bucketResponseList;
     }
