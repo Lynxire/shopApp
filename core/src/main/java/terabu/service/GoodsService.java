@@ -1,6 +1,7 @@
 package terabu.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.goods.GoodsRequest;
@@ -31,6 +32,7 @@ public class GoodsService {
     private final IngredientsRepository ingredientsRepository;
 
 
+    @Secured({"Admin"})
     public GoodsResponse save(GoodsRequest goodsRequest) {
         Goods goods = goodsMapper.toEntity(goodsRequest);
         List<Ingredients> ingredientsList = ingredientsRepository.findByIdIn(goodsRequest.getIngredientsId());

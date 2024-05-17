@@ -20,15 +20,8 @@ public class UserController {
 
     @PostMapping("/registration")
     public UserResponse registration(@RequestBody UserRequest userRequest) {
-        return userService.registerUser(userRequest);
+        return userService.registerNewUserAccount(userRequest);
     }
 
-    @PostMapping("/login")
-    public UserResponse authentication(@RequestBody UserRequest userRequest) {
-        if(userRequest.getEmail() == null || userRequest.getPassword() == null) {
-              throw new RuntimeException("Email and password are required");
-        }
-       return userService.authenticate(userRequest);
-    }
 
 }
