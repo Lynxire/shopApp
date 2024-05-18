@@ -33,7 +33,8 @@ public class SecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
-                .requestMatchers("/user/registration");
+                .requestMatchers("/user/registration")
+                .requestMatchers("/goods");
     }
 
     @Bean
@@ -41,6 +42,14 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).httpBasic(withDefaults()).authorizeHttpRequests(authorize->authorize
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/swagger-ui/**").hasAuthority("Admin")
+                .requestMatchers("/bucket/**").permitAll()
+                .requestMatchers("/comments/**").permitAll()
+                .requestMatchers("/orders/**").permitAll()
+                .requestMatchers("/ingredients/**").hasAuthority("Admin")
+                .requestMatchers("/stocks/**").hasAuthority("Admin")
+                .requestMatchers("/stocks/**").hasAuthority("Admin")
+                .requestMatchers("/data/**").permitAll()
+
                 .anyRequest().authenticated());
         return http.build();
     }

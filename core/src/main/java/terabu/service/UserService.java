@@ -32,7 +32,10 @@ public class UserService implements UserDetailsService {
         user.setLogin(accountDto.getLogin());
         user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         user.setEmail(accountDto.getEmail());
-        user.setRole(Role.Admin);
+        if(userRepositorySpringData.findAll().isEmpty()){
+            user.setRole(Role.Admin);
+        }
+        user.setRole(Role.Client);
         userRepositorySpringData.save(user);
         return userMapper.toResponse(user);
     }

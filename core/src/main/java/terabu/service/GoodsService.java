@@ -71,6 +71,8 @@ public class GoodsService {
         Goods goods = goodsRepository.findByName(name).orElseThrow(() -> new GoodsNotFoundException("Неверное название, товар не существует"));
         return goodsMapper.toResponse(goods);
     }
+
+    @Secured({"Admin"})
     public void deleteById(Long id) {
         goodsRepository.deleteById(id);
     }
