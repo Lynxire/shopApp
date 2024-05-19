@@ -1,6 +1,7 @@
 package terabu.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.bucket.BucketRequest;
@@ -40,7 +41,7 @@ public class BucketService {
         goodsById.setCount(goods1Count - bucketRequest.getCount());
         Goods goods = goodsRepository.save(goodsById);
 
-        User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new RuntimeException("Пользователь не авторизован"));
+        User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не авторизован"));
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseGet
                 (() -> {
                     Order newOrder = new Order();
@@ -70,7 +71,7 @@ public class BucketService {
     }
 
     public void completeBucket(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         order.setStatus(OrderStatus.COMPLETE);
         UserData userData = userDataRepository.findByUserId(userId);
@@ -81,7 +82,7 @@ public class BucketService {
     }
 
     public void cleanBucket(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));;
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
         bucketList.forEach(bucket -> {
@@ -100,11 +101,11 @@ public class BucketService {
 
     public void removeGoodsByBucket(BucketRequest bucketRequest) {
         //Проверка
-        User user = userRepository.findById(bucketRequest.getUserId()).get();
+        User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         List<Bucket> bucketList = bucketRepository.findByGoodsIdAndOrdersId(bucketRequest.getGoodsId(), order.getId());
         bucketList.forEach(bucket -> {
-                    Goods goods = goodsRepository.findById(bucketRequest.getGoodsId()).get();
+                    Goods goods = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new GoodsNotFoundException("Товар не найден"));
                     goods.setCount(goods.getCount() + bucket.getCount());
                 }
         );
@@ -112,7 +113,7 @@ public class BucketService {
     }
 
     public List<BucketResponse> getBucketByUserId(Long userId) {
-        User user = userRepository.findById(userId).get();
+        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
         List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
         List<BucketResponse> bucketResponseList = bucketList.stream().map(bucket -> {

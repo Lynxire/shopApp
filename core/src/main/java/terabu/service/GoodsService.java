@@ -57,9 +57,7 @@ public class GoodsService {
     }
     public List<GoodsResponse> findAll() {
         List<Goods> list = goodsRepository.findAll();
-        List<GoodsResponse> responses = new ArrayList<>();
-        list.stream().map(goodsMapper::toResponse).forEach(responses::add);
-        return responses;
+        return list.stream().map(goodsMapper::toResponse).toList();
     }
 
     public GoodsResponse findById(Long id) {

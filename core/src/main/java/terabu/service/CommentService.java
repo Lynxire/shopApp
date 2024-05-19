@@ -1,6 +1,7 @@
 package terabu.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import terabu.dto.comment.CommentRequest;
 import terabu.dto.comment.CommentResponse;
@@ -37,7 +38,7 @@ public class CommentService {
     }
 
     public List<CommentResponse> getCommentByUser(Long userId) {
-        UserData data = userDataRepository.findDataByUserId(userId).get();
+        UserData data = userDataRepository.findDataByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         List<Comments> list = commentsRepository.findAllByUserId(userId);
         List<CommentResponse> responses = new ArrayList<>();
         list.forEach(comments -> {
