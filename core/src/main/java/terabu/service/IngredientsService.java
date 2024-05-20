@@ -24,7 +24,7 @@ public class IngredientsService {
 
 
     public IngredientsResponse updateQualityForIngredients(Long id,Long quality) {
-        Ingredients ingredients = ingredientsRepository.findById(id).get();
+        Ingredients ingredients = ingredientsRepository.findById(id).orElseThrow(() -> new IngredientsNotFoundException("Ингредиент не найден"));
         ingredients.setQuantity(quality);
         ingredientsRepository.save(ingredients);
         return ingredientsMapper.toResponse(ingredients);

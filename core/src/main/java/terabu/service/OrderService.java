@@ -28,11 +28,12 @@ public class OrderService {
             throw new OrdersNotFoundException("Нету заказов");
         }
 
-        List<OrderResponse> orderResponseList = new ArrayList<>();
-        orderList.forEach(order -> {
-            orderResponseList.add(orderMapper.toResponse(order));
-        });
-        return orderResponseList;
+       return orderList.stream().map(orderMapper::toResponse).toList();
+//        List<OrderResponse> orderResponseList = new ArrayList<>();
+//        orderList.forEach(order -> {
+//            orderResponseList.add(orderMapper.toResponse(order));
+//        });
+//        return orderResponseList;
     }
 
 }
