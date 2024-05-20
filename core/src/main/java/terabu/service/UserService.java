@@ -13,7 +13,9 @@ import terabu.dto.users.UserResponse;
 import terabu.entity.User;
 import terabu.entity.UserData;
 import terabu.entity.status.Role;
+import terabu.exception.user.UserAlreadyExistException;
 import terabu.mapper.UserMapper;
+import terabu.repository.UserDataRepository;
 import terabu.repository.UserRepositorySpringData;
 
 import java.time.LocalDate;
@@ -26,10 +28,14 @@ public class UserService implements UserDetailsService {
     private final UserRepositorySpringData userRepositorySpringData;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
+    private final UserDataRepository userDataRepository;
 
     @Transactional
     public UserResponse registerNewUserAccount(UserRequest accountDto){
         User user = userMapper.toEntity(accountDto);
+        if(userRepositorySpringData.findByLogin(accountDto.getLogin()).isPresent() || userRepositorySpringData.findByEmail(accountDto.getEmail()).isPresent()){
+            throw new UserAlreadyExistException("Пользователь с такой почтой или логином уже существует");
+        }
         user.setDateRegistration(LocalDate.now());
         user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
         if(userRepositorySpringData.findAll().isEmpty()){
@@ -37,8 +43,13 @@ public class UserService implements UserDetailsService {
         }
         user.setRole(Role.Client);
 
-        UserData data = new UserData();
-        data.setUser(user);
+        userDataRepository.findByUserId(user.getId()).orElseGet(()->{
+            UserData newData = new UserData();
+            newData.setUser(user);
+            userDataRepository.save(newData);
+            return newData;
+        });
+
         userRepositorySpringData.save(user);
         return userMapper.toResponse(user);
     }

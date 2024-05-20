@@ -20,7 +20,7 @@ public class DiscountService {
     private final UserDataRepository userDataRepository;
 
     public Long calculatingDiscount(Long userId) {
-        UserData userData = userDataRepository.findByUserId(userId);
+        UserData userData = userDataRepository.findByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
         Discount discount = salesRepository.findByUserId(userId).orElseGet(() ->
                 {
                     Discount newDiscount = new Discount();
