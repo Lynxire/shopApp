@@ -74,7 +74,7 @@ public class BucketService {
         User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         order.setStatus(OrderStatus.COMPLETE);
-        UserData userData = userDataRepository.findByUserId(userId);
+        UserData userData = userDataRepository.findByUserId(userId).orElseThrow(()-> new UsernameNotFoundException("Пользователь не найден"));
         Long ordersData = userData.getOrders();
         userData.setOrders(ordersData + 1);
         userDataRepository.save(userData);

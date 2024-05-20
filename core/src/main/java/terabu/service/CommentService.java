@@ -65,7 +65,7 @@ public class CommentService {
 
         return commentsList.stream().map(comments ->{
             CommentResponse commentResponse = commentMapper.toResponse(comments);
-            UserData userData = userDataRepository.findByUserId(comments.getUser().getId());
+            UserData userData = userDataRepository.findByUserId(comments.getUser().getId()).orElseThrow(()-> new UsernameNotFoundException("Пользователь не найден"));
             commentResponse.setName(userData.getName());
             return commentResponse;
         }).toList();

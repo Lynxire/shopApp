@@ -13,6 +13,7 @@ import terabu.exception.ingredients.IngredientsNotAllowedValueException;
 import terabu.exception.ingredients.IngredientsNotFoundException;
 import terabu.exception.orders.OrdersNotFoundException;
 import terabu.exception.stocks.StocksNotFoundException;
+import terabu.exception.user.UserAlreadyExistException;
 
 @Slf4j
 @ControllerAdvice
@@ -55,6 +56,12 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(IngredientsNotAllowedValueException.class)
     public ResponseEntity<String> handleResourceNotFoundException(IngredientsNotAllowedValueException ex) {
+        log.error(ex.getMessage(), ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    }
+
+    @ExceptionHandler(UserAlreadyExistException.class)
+    public ResponseEntity<String> handleResourceNotFoundException(UserAlreadyExistException ex) {
         log.error(ex.getMessage(), ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
     }
