@@ -9,10 +9,11 @@ import lombok.Data;
 public class Comments {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+//    Sequence
     private Long id;
     private String comments;
 
-    @ManyToOne()
+    @ManyToOne
     @JoinColumn(name = "userId")
     private User user;
 }

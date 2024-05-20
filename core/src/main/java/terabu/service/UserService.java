@@ -1,61 +1,51 @@
 package terabu.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.users.UserRequest;
 import terabu.dto.users.UserResponse;
 import terabu.entity.User;
+import terabu.entity.UserData;
 import terabu.entity.status.Role;
 import terabu.mapper.UserMapper;
 import terabu.repository.UserRepositorySpringData;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
-public class UserService {
+public class UserService implements UserDetailsService {
     private final UserRepositorySpringData userRepositorySpringData;
+    private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
 
-
-
-    public UserResponse registerUser(UserRequest userRequest) {
-        User user = userMapper.toEntity(userRequest);
-        if (userRepositorySpringData.findByEmail(user.getEmail()).isPresent() || userRepositorySpringData.findByLogin(user.getLogin()).isPresent()) {
-            throw new RuntimeException("User already exists");
-        }
-        if (userRepositorySpringData.findAll().isEmpty()) {
-            user.setRole(Role.Admin);
-            user.setDateRegistration(LocalDate.now());
-            userRepositorySpringData.save(user);
-            System.out.println("Admin registered successfully");
-            return userMapper.toResponse(user);
-
-        }
+    @Transactional
+    public UserResponse registerNewUserAccount(UserRequest accountDto){
+        User user = userMapper.toEntity(accountDto);
         user.setDateRegistration(LocalDate.now());
+        user.setPassword(passwordEncoder.encode(accountDto.getPassword()));
+        if(userRepositorySpringData.findAll().isEmpty()){
+            user.setRole(Role.Admin);
+        }
         user.setRole(Role.Client);
+
+        UserData data = new UserData();
+        data.setUser(user);
         userRepositorySpringData.save(user);
-        System.out.println("User registered successfully");
         return userMapper.toResponse(user);
     }
 
-    public UserResponse authenticate(UserRequest userRequest) {
-        User userMapperEntity = userMapper.toEntity(userRequest);
-        if (userRepositorySpringData.findByEmail(userMapperEntity.getEmail()).isPresent() && userMapperEntity.getPassword().equals(userRepositorySpringData.findByEmail(userMapperEntity.getEmail()).get().getPassword())) {
-            System.out.println("Authenticated");
-            User user = userRepositorySpringData.findByEmail(userMapperEntity.getEmail()).get();
-            return userMapper.toResponse(user);
-        } else {
-            throw new RuntimeException("Invalid email or password");
-        }
+    @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return userRepositorySpringData.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException(username));
     }
-
-    public List<User> getAllUsers() {
-        return userRepositorySpringData.findAll();
-    }
-
 
 }

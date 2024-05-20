@@ -1,6 +1,7 @@
 package terabu.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.goods.GoodsRequest;
@@ -31,6 +32,7 @@ public class GoodsService {
     private final IngredientsRepository ingredientsRepository;
 
 
+    @Secured({"Admin"})
     public GoodsResponse save(GoodsRequest goodsRequest) {
         Goods goods = goodsMapper.toEntity(goodsRequest);
         List<Ingredients> ingredientsList = ingredientsRepository.findByIdIn(goodsRequest.getIngredientsId());
@@ -55,9 +57,7 @@ public class GoodsService {
     }
     public List<GoodsResponse> findAll() {
         List<Goods> list = goodsRepository.findAll();
-        List<GoodsResponse> responses = new ArrayList<>();
-        list.stream().map(goodsMapper::toResponse).forEach(responses::add);
-        return responses;
+        return list.stream().map(goodsMapper::toResponse).toList();
     }
 
     public GoodsResponse findById(Long id) {
@@ -69,6 +69,8 @@ public class GoodsService {
         Goods goods = goodsRepository.findByName(name).orElseThrow(() -> new GoodsNotFoundException("Неверное название, товар не существует"));
         return goodsMapper.toResponse(goods);
     }
+
+    @Secured({"Admin"})
     public void deleteById(Long id) {
         goodsRepository.deleteById(id);
     }

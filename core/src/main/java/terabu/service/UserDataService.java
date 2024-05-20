@@ -2,6 +2,7 @@ package terabu.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import terabu.dto.data.UserDataRequest;
 import terabu.dto.data.UserDataResponse;
@@ -21,7 +22,7 @@ public class UserDataService {
     private final UserDataMapper userDataMapper;
     @LoggerAnnotation
     public UserDataResponse update(UserDataRequest userDataRequest) {
-        User user = userRepository.findById(userDataRequest.getUserId()).get();
+        User user = userRepository.findById(userDataRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         if(userDataRequest.getLogin() != null){
             user.setLogin(userDataRequest.getLogin());
         }

@@ -2,6 +2,7 @@ package terabu.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import terabu.entity.Discount;
 import terabu.entity.User;
@@ -23,7 +24,7 @@ public class DiscountService {
         Discount discount = salesRepository.findByUserId(userId).orElseGet(() ->
                 {
                     Discount newDiscount = new Discount();
-                    User user = userRepository.findById(userId).get();
+                    User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
                     newDiscount.setName("Personal sales: " + user.getLogin());
                     newDiscount.setUser(user);
                     newDiscount.setSum(1L);

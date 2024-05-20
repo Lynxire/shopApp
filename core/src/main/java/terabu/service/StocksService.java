@@ -8,6 +8,7 @@ import terabu.dto.stocks.StocksResponse;
 import terabu.entity.Goods;
 import terabu.entity.Stocks;
 import terabu.entity.status.StockStatus;
+import terabu.exception.goods.GoodsNotFoundException;
 import terabu.exception.stocks.StocksNotFoundException;
 import terabu.mapper.StocksMapper;
 import terabu.repository.GoodsRepository;
@@ -25,7 +26,7 @@ public class StocksService {
 
     public StocksResponse saveStock(StocksRequest stocksRequest) {
         Stocks stocks = stocksMapper.toEntity(stocksRequest);
-        Goods goods = goodsRepository.findById(stocksRequest.getGoodsId()).get();
+        Goods goods = goodsRepository.findById(stocksRequest.getGoodsId()).orElseThrow(() -> new GoodsNotFoundException("Товар не найден"));
         stocks.setStockStatus(StockStatus.ACTIVE);
         stocks.setGoods(goods);
         stocksRepository.save(stocks);
