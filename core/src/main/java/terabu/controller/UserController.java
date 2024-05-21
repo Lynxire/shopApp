@@ -1,7 +1,9 @@
 package terabu.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import terabu.dto.users.UserRequest;
 import terabu.dto.users.UserResponse;
@@ -19,7 +21,7 @@ public class UserController {
 
 
     @PostMapping("/registration")
-    public UserResponse registration(@RequestBody UserRequest userRequest) {
+    public UserResponse registration(@Valid @RequestBody UserRequest userRequest) {
         return userService.registerNewUserAccount(userRequest);
     }
 
