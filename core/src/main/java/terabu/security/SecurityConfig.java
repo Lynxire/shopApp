@@ -41,14 +41,14 @@ public class SecurityConfig {
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).httpBasic(withDefaults()).authorizeHttpRequests(authorize->authorize
                 .requestMatchers("/").permitAll()
-                .requestMatchers("/swagger-ui/**").hasAuthority("Admin")
                 .requestMatchers("/bucket/**").permitAll()
                 .requestMatchers("/comments/**").permitAll()
                 .requestMatchers("/orders/**").permitAll()
+                .requestMatchers("/data/**").permitAll()
+                .requestMatchers("/swagger-ui/**").hasAuthority("Admin")
                 .requestMatchers("/ingredients/**").hasAuthority("Admin")
                 .requestMatchers("/stocks/**").hasAuthority("Admin")
                 .requestMatchers("/stocks/**").hasAuthority("Admin")
-                .requestMatchers("/data/**").permitAll()
 
                 .anyRequest().authenticated());
         return http.build();
