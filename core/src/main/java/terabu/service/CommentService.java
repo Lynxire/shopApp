@@ -25,7 +25,7 @@ public class CommentService {
     private final UserRepositorySpringData userRepository;
     private final UserDataRepository userDataRepository;
     public CommentResponse addComment(CommentRequest commentRequest) {
-        User user = userRepository.findById(commentRequest.getUserId()).get();
+        User user = userRepository.findById(commentRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Comments comments = commentMapper.toEntity(commentRequest);
         comments.setUser(user);
         commentsRepository.save(comments);
