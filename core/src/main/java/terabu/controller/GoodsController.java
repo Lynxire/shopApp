@@ -2,6 +2,8 @@ package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,8 +35,8 @@ public class GoodsController {
 
     @Operation(summary = "Все товары")
     @GetMapping()
-    public List<GoodsResponse> getAllGoods() {
-        return goodsService.findAll();
+    public List<GoodsResponse> getAllGoods(@RequestParam(defaultValue = "0")@Min(0) int page, @RequestParam(defaultValue = "10")@Min(1) @Max(100) int size) {
+        return goodsService.findAll(page,size);
     }
 
     @Operation(summary = "Поиск товаров по ID")

@@ -42,7 +42,7 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable).httpBasic(withDefaults()).authorizeHttpRequests(authorize->authorize
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/bucket/**").permitAll()
-                .requestMatchers("/comments/**").permitAll()
+                .requestMatchers("/comments/allComments").permitAll()
                 .requestMatchers("/orders/**").permitAll()
                 .requestMatchers("/data/**").permitAll()
                 .requestMatchers("/swagger-ui/**").hasAuthority("Admin")

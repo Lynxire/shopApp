@@ -1,6 +1,9 @@
 package terabu.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,9 +58,10 @@ public class GoodsService {
         return goodsMapper.toResponse(goods);
 
     }
-    public List<GoodsResponse> findAll() {
-        List<Goods> list = goodsRepository.findAll();
-        return list.stream().map(goodsMapper::toResponse).toList();
+    public List<GoodsResponse> findAll(int page, int size) {
+        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id"));
+        Page<Goods> goodsPage = goodsRepository.findAll(pageRequest);
+        return goodsPage.getContent().stream().map(goodsMapper::toResponse).toList();
     }
 
     public GoodsResponse findById(Long id) {
