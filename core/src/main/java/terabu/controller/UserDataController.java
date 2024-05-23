@@ -2,6 +2,7 @@ package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,7 +20,7 @@ public class UserDataController {
     private final UserDataService userDataService;
     @PostMapping("/update")
     @Operation(summary = "Обновление личной информации пользователя", description = "Данный метод для обновления личной информации и данных для входа")
-    public UserDataResponse updateData(@RequestBody UserDataRequest userDataRequest){
+    public UserDataResponse updateData(@RequestBody @Valid UserDataRequest userDataRequest){
         return userDataService.update(userDataRequest);
     }
 }

@@ -2,6 +2,9 @@ package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import terabu.dto.comment.CommentRequest;
@@ -19,19 +22,19 @@ public class CommentsController {
 
     @Operation(summary = "Добавить комментариев")
     @PostMapping("/add")
-    public CommentResponse addComment(@RequestBody CommentRequest commentRequest) {
+    public CommentResponse addComment(@RequestBody @Valid CommentRequest commentRequest) {
         return commentService.addComment(commentRequest);
     }
 
     @Operation(summary = "Удалить комментарий")
     @PostMapping("/delete")
-    public void deleteComment(@RequestParam Long commentId) {
+    public void deleteComment(@RequestParam @Min(1) @NotNull Long commentId) {
         commentService.deleteComment(commentId);
     }
 
     @Operation(summary = "Комментарии пользователя", description = "Данный метод отвечает за просмотр своих комментариев пользователю")
     @GetMapping("/myComments")
-    public List<CommentResponse> getMyComments(@RequestParam Long userId) {
+    public List<CommentResponse> getMyComments(@RequestParam @Min(1) @NotNull Long userId) {
         return commentService.getCommentByUser(userId);
     }
     @Operation(summary = "Все комментарии")

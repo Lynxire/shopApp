@@ -2,9 +2,11 @@ package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -25,13 +27,13 @@ public class GoodsController {
 
     @Operation(summary = "Добавление товара")
     @PostMapping("/add")
-    public GoodsResponse createGoods(@RequestBody GoodsRequest goodsRequest) {
+    public GoodsResponse createGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
         return goodsService.save(goodsRequest);
     }
 
     @Operation(summary = "Удаление товара по ID")
     @PostMapping("/delete")
-    public void deleteGoods(@RequestParam @Min(1) Long id) {
+    public void deleteGoods(@RequestParam @Min(1) @NotNull Long id) {
         goodsService.deleteById(id);
     }
 
@@ -49,7 +51,7 @@ public class GoodsController {
 
     @Operation(summary = "Поиск товаров по ID")
     @GetMapping("/findGoodsById")
-    public GoodsResponse findGoodsById(@RequestParam @Min(1) Long id) {
+    public GoodsResponse findGoodsById(@RequestParam @Min(1) @NotNull Long id) {
         return goodsService.findById(id);
     }
 
