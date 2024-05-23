@@ -40,12 +40,17 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable).httpBasic(withDefaults()).authorizeHttpRequests(authorize->authorize
+                .requestMatchers(
+                        "/v3/api-docs/**",
+                        "/swagger-ui/**",
+                        "/swagger-ui.html"
+                ).permitAll()
                 .requestMatchers("/").permitAll()
                 .requestMatchers("/bucket/**").permitAll()
                 .requestMatchers("/comments/allComments").permitAll()
                 .requestMatchers("/orders/**").permitAll()
                 .requestMatchers("/data/**").permitAll()
-                .requestMatchers("/swagger-ui/**").hasAuthority("Admin")
+                .requestMatchers("/goods/add").hasAuthority("Admin")
                 .requestMatchers("/ingredients/**").hasAuthority("Admin")
                 .requestMatchers("/stocks/**").hasAuthority("Admin")
                 .requestMatchers("/stocks/**").hasAuthority("Admin")

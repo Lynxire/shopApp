@@ -1,6 +1,7 @@
 package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
@@ -24,7 +25,7 @@ import java.util.List;
 @Tag(name = "Контроллер для товаров")
 public class GoodsController {
     private final GoodsService goodsService;
-
+    @SecurityRequirement(name = "basicAuth")
     @Operation(summary = "Добавление товара")
     @PostMapping("/add")
     public GoodsResponse createGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
