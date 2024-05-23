@@ -62,8 +62,8 @@ public class GoodsService {
         return goodsPage.getContent().stream().map(goodsMapper::toResponse).toList();
     }
 
-    public List<GoodsResponse> findAllByType(String type, int size) {
-        Pageable pageRequest = PageRequest.of(0, size, Sort.by("id"));
+    public List<GoodsResponse> findAllByType(String type, int page, int size) {
+        Pageable pageRequest = PageRequest.of(page, size, Sort.by("id"));
         List<Goods> goodsList = goodsRepository.findAllByType(GoodsType.valueOf(type), pageRequest);
         return goodsList.stream().map(goodsMapper::toResponse).toList();
 

@@ -43,8 +43,8 @@ public class GoodsController {
 
     @Operation(summary = "Все товары по определенному типу с использованием пагинации")
     @GetMapping("/findByType")
-    public List<GoodsResponse> getAllByType(@RequestParam @NotBlank(message = "Заполните тип") String type, @RequestParam(defaultValue = "10")@Min(1) @Max(100) int size) {
-        return goodsService.findAllByType(type,size);
+    public List<GoodsResponse> getAllByType(@RequestParam @NotBlank(message = "Заполните тип") String type,@RequestParam(defaultValue = "0")@Min(0) int page, @RequestParam(defaultValue = "10")@Min(1) @Max(100) int size) {
+        return goodsService.findAllByType(type,page,size);
     }
 
     @Operation(summary = "Поиск товаров по ID")
