@@ -4,6 +4,8 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -29,7 +31,7 @@ public class GoodsController {
 
     @Operation(summary = "Удаление товара по ID")
     @PostMapping("/delete")
-    public void deleteGoods(@RequestParam Long id) {
+    public void deleteGoods(@RequestParam @Min(1) Long id) {
         goodsService.deleteById(id);
     }
 
@@ -39,15 +41,21 @@ public class GoodsController {
         return goodsService.findAll(page,size);
     }
 
+    @Operation(summary = "Все товары по определенному типу с использованием пагинации")
+    @GetMapping("/findByType")
+    public List<GoodsResponse> getAllByType(@RequestParam @NotBlank(message = "Заполните тип") String type, @RequestParam(defaultValue = "10")@Min(1) @Max(100) int size) {
+        return goodsService.findAllByType(type,size);
+    }
+
     @Operation(summary = "Поиск товаров по ID")
     @GetMapping("/findGoodsById")
-    public GoodsResponse findGoodsById(@RequestParam Long id) {
+    public GoodsResponse findGoodsById(@RequestParam @Min(1) Long id) {
         return goodsService.findById(id);
     }
 
     @Operation(summary = "Поиск товаров по названию")
     @GetMapping("/finGoodsByName")
-    public GoodsResponse finGoodsByName(@RequestParam String name) {
+    public GoodsResponse finGoodsByName(@RequestParam @NotBlank(message = "Заполните имя") String name) {
         return goodsService.findByName(name);
     }
 

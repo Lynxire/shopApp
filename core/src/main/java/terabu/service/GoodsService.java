@@ -3,6 +3,7 @@ package terabu.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Service;
@@ -10,18 +11,15 @@ import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.goods.GoodsRequest;
 import terabu.dto.goods.GoodsResponse;
 import terabu.entity.*;
+import terabu.entity.status.GoodsType;
 import terabu.exception.goods.GoodsAlreadyExistException;
 import terabu.exception.goods.GoodsNotFoundException;
-import terabu.exception.ingredients.IngredientsAlreadyExistException;
 import terabu.exception.ingredients.IngredientsNotAllowedValueException;
-import terabu.exception.ingredients.IngredientsNotFoundException;
 import terabu.mapper.GoodsMapper;
 import terabu.repository.GoodsRepository;
 import terabu.repository.IngredientsRepository;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -62,6 +60,13 @@ public class GoodsService {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("id"));
         Page<Goods> goodsPage = goodsRepository.findAll(pageRequest);
         return goodsPage.getContent().stream().map(goodsMapper::toResponse).toList();
+    }
+
+    public List<GoodsResponse> findAllByType(String type, int size) {
+        Pageable pageRequest = PageRequest.of(0, size, Sort.by("id"));
+        List<Goods> goodsList = goodsRepository.findAllByType(GoodsType.valueOf(type), pageRequest);
+        return goodsList.stream().map(goodsMapper::toResponse).toList();
+
     }
 
     public GoodsResponse findById(Long id) {
