@@ -1,7 +1,8 @@
-package terabu.service;
+package terabu.service.User;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,16 +20,16 @@ import terabu.repository.UserDataRepository;
 import terabu.repository.UserRepositorySpringData;
 
 import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class UserService implements UserDetailsService {
+public class UserService{
     private final UserRepositorySpringData userRepositorySpringData;
     private final PasswordEncoder passwordEncoder;
     private final UserMapper userMapper;
     private final UserDataRepository userDataRepository;
+    private final JwtService jwtService;
+    private final AuthenticationManager authenticationManager;
 
     @Transactional
     public UserResponse registerNewUserAccount(UserRequest accountDto){
@@ -51,12 +52,22 @@ public class UserService implements UserDetailsService {
         });
 
         userRepositorySpringData.save(user);
-        return userMapper.toResponse(user);
+        var jwt = jwtService.generateToken(user);
+        return new UserResponse(jwt);
     }
 
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepositorySpringData.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException(username));
+    public UserResponse signIn(UserRequest request) {
+        var user = jwtService.loadUserByUsername(request.getLogin());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+                request.getLogin(),
+                request.getPassword(),
+                user.getAuthorities()
+        ));
+
+        var jwt = jwtService.generateToken(user);
+        return new UserResponse(jwt);
     }
+
+
 
 }

@@ -8,5 +8,4 @@ import terabu.entity.User;
 @Mapper(componentModel = "spring")
 public interface UserMapper {
     public User toEntity(UserRequest userRequest);
-    public UserResponse toResponse(User user);
 }
