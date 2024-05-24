@@ -46,6 +46,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .requestMatchers("/user/registration")
+                .requestMatchers("/user/login")
                 .requestMatchers("/goods");
     }
 
