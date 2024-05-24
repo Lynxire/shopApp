@@ -11,9 +11,10 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 @SecurityScheme(
+        name = "Bearer Authentication",
         type = SecuritySchemeType.HTTP,
-        name = "basicAuth",
-        scheme = "basic")
+        bearerFormat = "JWT",
+        scheme = "bearer")
 @OpenAPIDefinition(
         info = @Info(
                 title = "Shop",

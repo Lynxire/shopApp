@@ -27,7 +27,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     public static final String BEARER_PREFIX = "Bearer ";
     public static final String HEADER_NAME = "Authorization";
     private final JwtService jwtService;
-    private final UserRepositorySpringData userRepositorySpringData;
+
 
     @Override
     protected void doFilterInternal(
@@ -48,7 +48,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         var username = jwtService.extractUserName(jwt);
 
         if (StringUtils.isNotEmpty(username)) {
-            UserDetails userDetails =  userRepositorySpringData.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException(username));
+            UserDetails userDetails =  jwtService.loadUserByUsername(username);
 
             // Если токен валиден, то аутентифицируем пользователя
             if (jwtService.isTokenValid(jwt, userDetails)) {

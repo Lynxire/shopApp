@@ -25,10 +25,11 @@ import java.util.List;
 @Tag(name = "Контроллер для товаров")
 public class GoodsController {
     private final GoodsService goodsService;
-    @SecurityRequirement(name = "basicAuth")
+
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Добавление товара")
     @PostMapping("/add")
-    public GoodsResponse createGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
+    public GoodsResponse addGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
         return goodsService.save(goodsRequest);
     }
 
