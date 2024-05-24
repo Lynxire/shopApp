@@ -21,9 +21,9 @@ public class UserController {
         return userService.registerNewUserAccount(userRequest);
     }
 
-    @PostMapping("/login")
-    public UserResponse login(@Valid @RequestBody UserRequest userRequest) {
-        return userService.signIn(userRequest);
+    @PostMapping("/authorization")
+    public UserResponse authorization(@Valid @RequestBody UserRequest userRequest) {
+        return userService.authorization(userRequest);
     }
 
 

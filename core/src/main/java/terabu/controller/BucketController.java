@@ -1,6 +1,7 @@
 package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -16,9 +17,11 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("bucket")
+@SecurityRequirement(name = "Bearer Authentication")
 @Tag(name = "Контроллер для корзины")
 public class BucketController {
     private final BucketService bucketService;
+
     @Operation(summary = "Добавление в корзину товаров", description = "Добавляет товары в корзину и создает заказ, если у текущего пользователя нету существующего")
     @PostMapping("/add")
     public BucketResponse addOrderAndGoodsByBucket(@RequestBody @Valid BucketRequest bucketRequest){

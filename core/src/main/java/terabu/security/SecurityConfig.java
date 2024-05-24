@@ -46,7 +46,7 @@ public class SecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
                 .requestMatchers("/user/registration")
-                .requestMatchers("/user/login")
+                .requestMatchers("/user/authorization")
                 .requestMatchers("/goods");
     }
 
@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .requestMatchers("/comments/allComments").permitAll()
                 .requestMatchers("/orders/**").permitAll()
                 .requestMatchers("/data/**").permitAll()
-                .requestMatchers("/goods/add").hasAuthority("Admin")
+                .requestMatchers("/goods/**").hasAuthority("Admin")
                 .requestMatchers("/ingredients/**").hasAuthority("Admin")
                 .requestMatchers("/stocks/**").hasAuthority("Admin")
                 .requestMatchers("/stocks/**").hasAuthority("Admin")

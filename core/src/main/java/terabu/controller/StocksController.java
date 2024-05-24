@@ -1,6 +1,7 @@
 package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -18,11 +19,14 @@ import terabu.service.StocksService;
 public class StocksController {
     private final StocksService stocksService;
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Добавление акции")
     @PostMapping("/add")
     public StocksResponse saveStock(@RequestBody @Valid StocksRequest stocksRequest) {
         return stocksService.saveStock(stocksRequest);
     }
+
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Удаление акции по товару")
     @PostMapping("/delete")
     public void deleteStock(@RequestParam @Min(1) @NotNull Long goodsId) {

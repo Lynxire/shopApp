@@ -32,8 +32,6 @@ public class GoodsService {
     private final GoodsMapper goodsMapper;
     private final IngredientsRepository ingredientsRepository;
 
-
-    @Secured({"Admin"})
     public GoodsResponse save(GoodsRequest goodsRequest) {
         Goods goods = goodsMapper.toEntity(goodsRequest);
         List<Ingredients> ingredientsList = ingredientsRepository.findByIdIn(goodsRequest.getIngredientsId());
@@ -79,7 +77,6 @@ public class GoodsService {
         return goodsMapper.toResponse(goods);
     }
 
-    @Secured({"Admin"})
     public void deleteById(Long id) {
         goodsRepository.deleteById(id);
     }

@@ -56,7 +56,7 @@ public class UserService{
         return new UserResponse(jwt);
     }
 
-    public UserResponse signIn(UserRequest request) {
+    public UserResponse authorization(UserRequest request) {
         var user = jwtService.loadUserByUsername(request.getLogin());
         authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
                 request.getLogin(),

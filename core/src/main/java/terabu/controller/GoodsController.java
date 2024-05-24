@@ -33,6 +33,7 @@ public class GoodsController {
         return goodsService.save(goodsRequest);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Удаление товара по ID")
     @PostMapping("/delete")
     public void deleteGoods(@RequestParam @Min(1) @NotNull Long id) {
@@ -51,6 +52,7 @@ public class GoodsController {
         return goodsService.findAllByType(type,page,size);
     }
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Поиск товаров по ID")
     @GetMapping("/findGoodsById")
     public GoodsResponse findGoodsById(@RequestParam @Min(1) @NotNull Long id) {

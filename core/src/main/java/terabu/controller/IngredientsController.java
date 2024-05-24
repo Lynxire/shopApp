@@ -1,6 +1,7 @@
 package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
@@ -18,8 +19,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("ingredients")
 @Tag(name = "Контроллер для ингредиентов")
+@SecurityRequirement(name = "Bearer Authentication")
 public class IngredientsController {
     private final IngredientsService ingredientsService;
+
 
     @Operation(summary = "Все ингредиенты")
     @GetMapping
@@ -28,7 +31,7 @@ public class IngredientsController {
     }
 
     @Operation(summary = "Удаление ингредиентов по ID")
-    @PostMapping("/delete")
+    @PostMapping("/deleteById")
     public void deleteById(@RequestParam @Min(1) @NotNull Long id) {
         ingredientsService.deleteById(id);
     }
