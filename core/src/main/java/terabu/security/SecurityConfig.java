@@ -47,27 +47,31 @@ public class SecurityConfig {
         return (web) -> web.ignoring()
                 .requestMatchers("/user/registration")
                 .requestMatchers("/user/authorization")
-                .requestMatchers("/goods");
+                .requestMatchers("/comments/allComments")
+                .requestMatchers("/goods/finGoodsByName")
+                .requestMatchers("/goods/findByType")
+                .requestMatchers("/goods")
+                .requestMatchers("/stocks/find");
     }
 
     @Bean
     public SecurityFilterChain configure(HttpSecurity http) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable).httpBasic(withDefaults()).authorizeHttpRequests(authorize->authorize
-                .requestMatchers(
-                        "/v3/api-docs/**",
-                        "/swagger-ui/**",
-                        "/swagger-ui.html"
-                ).permitAll()
-                .requestMatchers("/").permitAll()
-                .requestMatchers("/bucket/**").permitAll()
-                .requestMatchers("/comments/allComments").permitAll()
-                .requestMatchers("/orders/**").permitAll()
-                .requestMatchers("/data/**").permitAll()
-                .requestMatchers("/goods/**").hasAuthority("Admin")
-                .requestMatchers("/ingredients/**").hasAuthority("Admin")
-                .requestMatchers("/stocks/**").hasAuthority("Admin")
-                .requestMatchers("/stocks/**").hasAuthority("Admin")
-                .anyRequest().authenticated())
+        http.csrf(AbstractHttpConfigurer::disable).httpBasic(withDefaults()).authorizeHttpRequests(authorize -> authorize
+                        .requestMatchers(
+                                "/v3/api-docs/**",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html"
+                        ).permitAll()
+                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/bucket/**").hasAnyAuthority("Client", "Admin")
+                        .requestMatchers("/comments/**").hasAnyAuthority("Client", "Admin")
+                        .requestMatchers("/comments/delete").hasAuthority("Admin")
+                        .requestMatchers("/goods/**").hasAuthority("Admin")
+                        .requestMatchers("/ingredients/**").hasAuthority("Admin")
+                        .requestMatchers("/orders/**").hasAnyAuthority("Client", "Admin")
+                        .requestMatchers("/stocks/**").hasAuthority("Admin")
+                        .requestMatchers("/data/**").hasAnyAuthority("Client", "Admin")
+                        .anyRequest().authenticated())
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
