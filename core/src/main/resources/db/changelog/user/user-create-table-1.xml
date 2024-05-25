@@ -7,7 +7,7 @@
             </not>
         </preConditions>
         <createTable tableName="user">
-            <column name="id" type="bigint">
+            <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="user_id_pkey"/>
             </column>
             <column name="login" type="VARCHAR(255)">
@@ -23,8 +23,5 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-    <changeSet author="starovoitov" id="user-sequence-1">
-        <createSequence incrementBy="1" minValue="1" sequenceName="user_seq" startValue="1"/>
     </changeSet>
 </databaseChangeLog>
