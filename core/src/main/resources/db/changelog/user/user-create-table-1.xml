@@ -6,7 +6,7 @@
                 <tableExists tableName="user"/>
             </not>
         </preConditions>
-        <createTable tableName="user">
+        <createTable schemaName="app" tableName="user">
             <column name="id" type="bigint" autoIncrement="true">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="user_id_pkey"/>
             </column>
@@ -15,7 +15,7 @@
             </column>
             <column name="email" type="VARCHAR(255)">
                 <constraints nullable="false" unique="true"/>
-            </column><column name="dateRegistration" type="date">
+            </column><column name="data_registration" type="date">
                 <constraints nullable="false" unique="true"/>
             </column>
             <column name="password" type="VARCHAR(255)">

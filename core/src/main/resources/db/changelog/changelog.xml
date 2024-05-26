@@ -2,5 +2,6 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <include file="/user/user.xml" relativeToChangelogFile="true"/>
-    <include file="comments/comments-create-table-1.xml" relativeToChangelogFile="true"/>
+    <include file="data/data-create-table-3.xml" relativeToChangelogFile="true"/>
+    <include file="comments/comments-create-table-4.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
