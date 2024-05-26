@@ -117,17 +117,6 @@ public class BucketService {
             bucket.getGoods().forEach(good -> response.setNameGoods(good.getName()));
             return response;
         }).toList();
-//
-//        List<BucketResponse> bucketResponseList = new ArrayList<>();
-//        bucketList.forEach(bucket -> {
-//            BucketResponse bucketResponse = mapper.toResponse(bucket);
-//            List<Goods> goodsList = bucket.getGoods().stream().toList();
-//            goodsList.forEach(goods -> {
-//                bucketResponse.setNameGoods(goods.getName());
-//                bucketResponseList.add(bucketResponse);
-//            });
-//        });
-
         return bucketResponseList;
     }
 

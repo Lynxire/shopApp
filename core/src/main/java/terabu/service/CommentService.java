@@ -50,7 +50,6 @@ public class CommentService {
         return responses;
     }
 
-//    Пагинацичя
     public List<CommentResponse> getAllComments(){
         List<Comments> commentsList = commentsRepository.findAll();
 
@@ -60,17 +59,5 @@ public class CommentService {
             commentResponse.setName(userData.getName());
             return commentResponse;
         }).toList();
-
-
-
-////        List<CommentResponse> responses = new ArrayList<>();
-//        commentsList.forEach(comments -> {
-//            User user = comments.getUser();
-//            UserData userData = userDataRepository.findByUserId(user.getId());
-//            CommentResponse commentResponse = commentMapper.toResponse(comments);
-//            commentResponse.setName(userData.getName());
-//            responses.add(commentResponse);
-//        });
-//        return responses;
     }
 }
