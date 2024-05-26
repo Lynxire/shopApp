@@ -1,7 +1,10 @@
 package terabu.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,9 +22,10 @@ import java.util.List;
 public class OrderController {
     private final OrderService orderService;
 
+    @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Просмотр заказов по ID пользователя")
     @GetMapping("/byUserId")
-    public List<OrderResponse> getOrderByUserId(@RequestParam Long userId) {
+    public List<OrderResponse> getOrderByUserId(@RequestParam @Min(1) @NotNull Long userId) {
         return orderService.getOrderByUserId(userId);
     }
 }

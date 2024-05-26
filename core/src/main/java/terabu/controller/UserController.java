@@ -1,14 +1,12 @@
 package terabu.controller;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import terabu.dto.users.UserRequest;
 import terabu.dto.users.UserResponse;
-import terabu.entity.User;
-import terabu.service.UserService;
-
-import java.util.List;
+import terabu.service.User.UserService;
 
 @RequiredArgsConstructor
 @RestController
@@ -19,8 +17,13 @@ public class UserController {
 
 
     @PostMapping("/registration")
-    public UserResponse registration(@RequestBody UserRequest userRequest) {
+    public UserResponse registration(@Valid @RequestBody UserRequest userRequest) {
         return userService.registerNewUserAccount(userRequest);
+    }
+
+    @PostMapping("/authorization")
+    public UserResponse authorization(@Valid @RequestBody UserRequest userRequest) {
+        return userService.authorization(userRequest);
     }
 
 

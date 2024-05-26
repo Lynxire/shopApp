@@ -88,9 +88,6 @@ public class BucketService {
         bucketList.forEach(bucket -> {
             List<Goods> goods = bucket.getGoods();
             goods.forEach(good -> {
-//                Goods goodsCount = goodsRepository.findById(good.getId()).get();
-//                goodsCount.setCount(goodsCount.getCount() + bucket.getCount());
-
                 good.setCount(good.getCount() + bucket.getCount());
             });
 
@@ -100,7 +97,6 @@ public class BucketService {
     }
 
     public void removeGoodsByBucket(BucketRequest bucketRequest) {
-        //Проверка
         User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         List<Bucket> bucketList = bucketRepository.findByGoodsIdAndOrdersId(bucketRequest.getGoodsId(), order.getId());

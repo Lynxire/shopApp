@@ -25,7 +25,7 @@ public class CommentService {
     private final UserRepositorySpringData userRepository;
     private final UserDataRepository userDataRepository;
     public CommentResponse addComment(CommentRequest commentRequest) {
-        User user = userRepository.findById(commentRequest.getUserId()).get();
+        User user = userRepository.findById(commentRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
         Comments comments = commentMapper.toEntity(commentRequest);
         comments.setUser(user);
         commentsRepository.save(comments);
@@ -53,15 +53,6 @@ public class CommentService {
 //    Пагинацичя
     public List<CommentResponse> getAllComments(){
         List<Comments> commentsList = commentsRepository.findAll();
-////        List<CommentResponse> responses = new ArrayList<>();
-//        commentsList.forEach(comments -> {
-//            User user = comments.getUser();
-//            UserData userData = userDataRepository.findByUserId(user.getId());
-//            CommentResponse commentResponse = commentMapper.toResponse(comments);
-//            commentResponse.setName(userData.getName());
-//            responses.add(commentResponse);
-//        });
-//        return responses;
 
         return commentsList.stream().map(comments ->{
             CommentResponse commentResponse = commentMapper.toResponse(comments);
@@ -72,5 +63,14 @@ public class CommentService {
 
 
 
+////        List<CommentResponse> responses = new ArrayList<>();
+//        commentsList.forEach(comments -> {
+//            User user = comments.getUser();
+//            UserData userData = userDataRepository.findByUserId(user.getId());
+//            CommentResponse commentResponse = commentMapper.toResponse(comments);
+//            commentResponse.setName(userData.getName());
+//            responses.add(commentResponse);
+//        });
+//        return responses;
     }
 }
