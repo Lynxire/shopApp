@@ -1,0 +1,22 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="starovoitov" id="bucket_goods-create-table-11">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="bucket_goods"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="app" tableName="bucket_goods">
+            <column name="goods_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_goods_id"/>
+            </column>
+            <column name="bucket_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_bucket_id"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="bucket_goods" baseColumnNames="goods_id" constraintName="fk_goods_id" referencedTableSchemaName="app" referencedTableName="goods"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="bucket_goods" baseColumnNames="bucket_id" constraintName="fk_bucket_id" referencedTableSchemaName="app" referencedTableName="bucket"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

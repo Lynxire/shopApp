@@ -23,17 +23,11 @@ public class OrderService {
     private final OrderMapper orderMapper;
 
     public List<OrderResponse> getOrderByUserId(Long userId) {
-        List<Order> orderList = orderRepository.findOrderByUserId(userId).stream().toList();
+        List<Order> orderList = orderRepository.findAllByUserId(userId);
         if (orderList.isEmpty()) {
             throw new OrdersNotFoundException("Нету заказов");
         }
-
        return orderList.stream().map(orderMapper::toResponse).toList();
-//        List<OrderResponse> orderResponseList = new ArrayList<>();
-//        orderList.forEach(order -> {
-//            orderResponseList.add(orderMapper.toResponse(order));
-//        });
-//        return orderResponseList;
     }
 
 }

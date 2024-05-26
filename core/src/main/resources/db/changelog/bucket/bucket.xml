@@ -1,4 +1,5 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <include file="user-create-table-1.xml" relativeToChangelogFile="true"/>
-    <include file="user-insert-admin-2.xml" relativeToChangelogFile="true"/>
+    <include file="bucket-create-table-10.xml" relativeToChangelogFile="true"/>
+    <include file="bucket_goods-create-table-11.xml" relativeToChangelogFile="true"/>
+    <include file="bucket_orders-create-table-12.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

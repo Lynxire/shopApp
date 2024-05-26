@@ -7,7 +7,7 @@
             </not>
         </preConditions>
         <createTable schemaName="app" tableName="data">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="data_id_pkey"/>
             </column>
             <column name="name" type="VARCHAR(255)">
@@ -25,5 +25,14 @@
         </createTable>
         <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="data" baseColumnNames="user_id" constraintName="fk_data_user" referencedTableSchemaName="app" referencedTableName="user"
                                  referencedColumnNames="id"/>
+        <addAutoIncrement tableName="data" columnName="id" schemaName="app" startWith="2" incrementBy="1"/>
+
+        <insert tableName="data" schemaName="app">
+            <column name="id" value="1" />
+            <column name="name" value="Test" />
+            <column name="surname" value="Test" />
+            <column name="user_id" value="1" />
+        </insert>
+
     </changeSet>
 </databaseChangeLog>

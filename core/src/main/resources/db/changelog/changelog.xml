@@ -9,5 +9,5 @@
     <include file="order/order-create-table-7.xml" relativeToChangelogFile="true"/>
     <include file="/goods/goods.xml" relativeToChangelogFile="true"/>
     <include file="stocks/stocks-create-table-10.xml" relativeToChangelogFile="true"/>
-
+    <include file="/bucket/bucket.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
