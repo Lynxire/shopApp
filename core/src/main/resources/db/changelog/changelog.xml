@@ -4,4 +4,10 @@
     <include file="/user/user.xml" relativeToChangelogFile="true"/>
     <include file="data/data-create-table-3.xml" relativeToChangelogFile="true"/>
     <include file="comments/comments-create-table-4.xml" relativeToChangelogFile="true"/>
+    <include file="discount/discount-create-table-5.xml" relativeToChangelogFile="true"/>
+    <include file="ingredients/ingredients-create-table-6.xml" relativeToChangelogFile="true"/>
+    <include file="order/order-create-table-7.xml" relativeToChangelogFile="true"/>
+    <include file="/goods/goods.xml" relativeToChangelogFile="true"/>
+    <include file="stocks/stocks-create-table-10.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

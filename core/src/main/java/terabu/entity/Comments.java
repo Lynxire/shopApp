@@ -8,8 +8,8 @@ import lombok.Data;
 @Table(schema = "app", name = "comments")
 public class Comments {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-//    Sequence
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "comments_id")
+    @SequenceGenerator(name = "comments_id", sequenceName = "comments_seq", allocationSize = 10)
     private Long id;
     private String comments;
 

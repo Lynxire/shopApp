@@ -7,17 +7,19 @@
             </not>
         </preConditions>
         <createTable schemaName="app" tableName="comments">
-            <column name="id" type="bigint" autoIncrement="true">
+            <column name="id" type="bigint">
                 <constraints nullable="false" primaryKey="true" primaryKeyName="comments_id_pkey"/>
             </column>
             <column name="comments" type="VARCHAR(255)">
-                <constraints nullable="false" unique="true"/>
+                <constraints nullable="false"/>
             </column>
             <column name="user_id" type="bigint">
                 <constraints nullable="false" foreignKeyName="fk_comments_user"/>
             </column>
         </createTable>
+        <createSequence sequenceName="comments_seq" schemaName="app" startValue="1" minValue="1" incrementBy="1" />
         <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="comments" baseColumnNames="user_id" constraintName="fk_comments_user" referencedTableSchemaName="app" referencedTableName="user"
                                  referencedColumnNames="id"/>
+
     </changeSet>
 </databaseChangeLog>
