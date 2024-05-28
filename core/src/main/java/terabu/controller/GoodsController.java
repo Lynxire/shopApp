@@ -28,27 +28,33 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Контроллер для товаров")
 public class GoodsController {
+    private final GoodsService goodsService;
+
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Добавление товара")
     @PostMapping("/add")
-    @CachePut(value = "goods", key = "#goodsRequest.name")
+    /*
+    Так как при просмотре всех товаров не обновляется информация, пока жив кэш, то используется очистка кэша (@CacheEvict).
+    Если бы использовался только поиск по определенным значения, то лучше использовать @CachePut.
+    @CachePut - к примеру мы ищем по id, если в КЭШ не найдено с таким id значение, то он использует goodsService.findById;
+     */
+    @CacheEvict(value = "goods", allEntries = true)
     public GoodsResponse addGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
         return goodsService.save(goodsRequest);
     }
 
-    private final GoodsService goodsService;
 
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Удаление товара по ID")
     @PostMapping("/delete")
-    @CacheEvict(cacheNames = "product", key = "#id")
+    @CacheEvict(value = "goods", allEntries = true, key = "#id")
     public void deleteGoods(@RequestParam @Min(1) @NotNull Long id) {
         goodsService.deleteById(id);
     }
 
     @Operation(summary = "Все товары")
     @GetMapping()
-    @Cacheable("goods")
+    @Cacheable(value = "goods")
     public List<GoodsResponse> getAllGoods(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
         return goodsService.findAll(page, size);
     }
