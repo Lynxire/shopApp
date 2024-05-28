@@ -17,13 +17,14 @@ import terabu.repository.UserDataRepository;
 import terabu.repository.UserRepositorySpringData;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 public class CommentServiceTest {
@@ -44,18 +45,38 @@ public class CommentServiceTest {
 
     @Test
     void testGetAllComments(){
-        Mockito.when(commentsRepository.findAll()).thenReturn(new ArrayList<>());
-        UserData mockUserData = new UserData();
-        mockUserData.setName("John Doe");
-        Mockito.when(userDataRepository.findByUserId(any())).thenReturn(Optional.of(mockUserData));
+        List<Comments> list = List.of(comments());
+        Mockito.when(commentsRepository.findAll()).thenReturn(list);
+        when(commentMapper.toResponse(any())).thenReturn(commentResponse());
+        Mockito.when(userDataRepository.findByUserId(any())).thenReturn(Optional.of(userData()));
         List<CommentResponse> result = commentService.getAllComments();
 
+ 
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(commentResponse(), result.get(0));
+        verify(commentsRepository, times(1)).findAll();
+        verify(commentMapper, times(1)).toResponse(comments());
+        verify(userDataRepository, times(1)).findByUserId(1L);
 
+    }
+
+    private UserData userData(){
+        UserData userData = new UserData();
+        userData.setName("John Doe");
+        userData.setUser(user());
+        return userData;
+    }
+
+    private User user(){
+        User user = new User();
+        user.setId(1L);
+        return user;
     }
 
     private CommentResponse commentResponse(){
         CommentResponse commentResponse = new CommentResponse();
-        commentResponse.setComments("Test");
+        commentResponse.setName("John Doe");
         return commentResponse;
     }
     private CommentRequest commentRequest(){
@@ -67,6 +88,8 @@ public class CommentServiceTest {
 
     private Comments comments(){
         Comments comments = new Comments();
+        comments.setId(1L);
+        comments.setUser(user());
         comments.setComments("Test");
         return comments;
     }

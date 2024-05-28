@@ -10,6 +10,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.web.bind.annotation.*;
 
 import terabu.dto.goods.GoodsRequest;
@@ -24,43 +28,49 @@ import java.util.List;
 @RequiredArgsConstructor
 @Tag(name = "Контроллер для товаров")
 public class GoodsController {
-    private final GoodsService goodsService;
-
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Добавление товара")
     @PostMapping("/add")
+    @CachePut(value = "goods", key = "#goodsRequest.name")
     public GoodsResponse addGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
         return goodsService.save(goodsRequest);
     }
 
+    private final GoodsService goodsService;
+
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Удаление товара по ID")
     @PostMapping("/delete")
+    @CacheEvict(cacheNames = "product", key = "#id")
     public void deleteGoods(@RequestParam @Min(1) @NotNull Long id) {
         goodsService.deleteById(id);
     }
 
     @Operation(summary = "Все товары")
     @GetMapping()
-    public List<GoodsResponse> getAllGoods(@RequestParam(defaultValue = "0")@Min(0) int page, @RequestParam(defaultValue = "10")@Min(1) @Max(100) int size) {
-        return goodsService.findAll(page,size);
+    @Cacheable("goods")
+    public List<GoodsResponse> getAllGoods(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
+        return goodsService.findAll(page, size);
     }
 
     @Operation(summary = "Все товары по определенному типу с использованием пагинации")
     @GetMapping("/findByType")
-    public List<GoodsResponse> getAllByType(@RequestParam @NotBlank(message = "Заполните тип") String type,@RequestParam(defaultValue = "0")@Min(0) int page, @RequestParam(defaultValue = "10")@Min(1) @Max(100) int size) {
-        return goodsService.findAllByType(type,page,size);
+    @Cacheable(value = "goods", key = "#type")
+    public List<GoodsResponse> getAllByType(@RequestParam @NotBlank(message = "Заполните тип") String type, @RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
+        return goodsService.findAllByType(type, page, size);
     }
 
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Поиск товаров по ID")
     @GetMapping("/findGoodsById")
+    @Cacheable(value = "goods", key = "#id")
     public GoodsResponse findGoodsById(@RequestParam @Min(1) @NotNull Long id) {
         return goodsService.findById(id);
     }
 
     @Operation(summary = "Поиск товаров по названию")
     @GetMapping("/finGoodsByName")
+    @Cacheable(value = "goods", key = "#name")
     public GoodsResponse finGoodsByName(@RequestParam @NotBlank(message = "Заполните имя") String name) {
         return goodsService.findByName(name);
     }
