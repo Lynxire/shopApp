@@ -1,4 +1,4 @@
-package terabu.service.User;
+package terabu.service;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,16 +10,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import terabu.entity.User;
+import terabu.repository.UserRepositorySpringData;
+
 
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import terabu.entity.User;
-import terabu.repository.UserRepositorySpringData;
-
 
 
 @Service
