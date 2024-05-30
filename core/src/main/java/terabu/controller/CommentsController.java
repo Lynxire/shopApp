@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import terabu.dto.comment.CommentRequest;
 import terabu.dto.comment.CommentResponse;
 import terabu.service.CommentService;
