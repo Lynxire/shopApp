@@ -10,8 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import terabu.entity.User;
-import terabu.repository.UserRepositorySpringData;
+import terabu.dto.users.UserDTO;
 
 
 import java.security.Key;
@@ -24,10 +23,10 @@ import java.util.function.Function;
 @Service
 @RequiredArgsConstructor
 public class JwtService implements UserDetailsService {
-    private final UserRepositorySpringData userRepositorySpringData;
+    private final UserService userService;
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepositorySpringData.findByLogin(username).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+        return userService.findUserByLogin(username);
     }
     private static final String jwtSecret = "JR/P3cT92U04cqb2ofVYA877KYgPuHv41OGCjZ/g7cgAPS7qlmiQjM7B4iYDuzA7pAmljCmDrvVZMWVgWLzZTCmq/gN0skkDF1Xv";
     public String extractUserName(String token) {
@@ -35,7 +34,7 @@ public class JwtService implements UserDetailsService {
     }
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        if (userDetails instanceof User customUserDetails) {
+        if (userDetails instanceof UserDTO customUserDetails) {
             claims.put("id", customUserDetails.getId());
             claims.put("email", customUserDetails.getEmail());
             claims.put("role", customUserDetails.getRole());

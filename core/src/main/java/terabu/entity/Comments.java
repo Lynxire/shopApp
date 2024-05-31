@@ -2,6 +2,7 @@ package terabu.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import terabu.dto.users.UserDTO;
 
 @Data
 @Entity
@@ -12,8 +13,7 @@ public class Comments {
     @SequenceGenerator(name = "comments_id", sequenceName = "comments_seq", allocationSize = 1, schema = "app")
     private Long id;
     private String comments;
-
-    @ManyToOne
     @JoinColumn(name = "userId")
-    private User user;
+    private Long userId;
+
 }

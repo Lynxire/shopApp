@@ -1,6 +1,7 @@
 package terabu.entity;
 
 import jakarta.persistence.*;
+import terabu.dto.users.UserDTO;
 
 @lombok.Data
 @Entity
@@ -12,8 +13,6 @@ public class UserData {
     private String name;
     private String surname;
     private Long orders;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "userId")
+    private Long userId;
 }

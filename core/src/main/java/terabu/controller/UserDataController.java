@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 import terabu.dto.data.UserDataRequest;
 import terabu.dto.data.UserDataResponse;
-import terabu.dto.users.UserResponse;
 
 @RestController
 @RequiredArgsConstructor
