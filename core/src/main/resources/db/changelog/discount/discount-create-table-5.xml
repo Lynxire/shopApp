@@ -17,10 +17,8 @@
                 <constraints nullable="true"/>
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false" unique="true" foreignKeyName="fk_discount_user"/>
+                <constraints nullable="false" unique="true"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="discount" baseColumnNames="user_id" constraintName="fk_discount_user" referencedTableSchemaName="app" referencedTableName="user"
-                                 referencedColumnNames="id"/>
     </changeSet>
 </databaseChangeLog>

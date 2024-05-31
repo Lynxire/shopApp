@@ -14,12 +14,11 @@
                 <constraints nullable="false"/>
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_comments_user"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
         <createSequence sequenceName="comments_seq" schemaName="app" startValue="1" minValue="1" incrementBy="1" />
-        <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="comments" baseColumnNames="user_id" constraintName="fk_comments_user" referencedTableSchemaName="app" referencedTableName="user"
-                                 referencedColumnNames="id"/>
+
 
     </changeSet>
 </databaseChangeLog>

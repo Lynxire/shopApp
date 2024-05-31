@@ -14,11 +14,10 @@
                 <constraints nullable="true" unique="true"/>
             </column>
             <column name="user_id" type="bigint">
-                <constraints nullable="false" foreignKeyName="fk_order_user"/>
+                <constraints nullable="false"/>
             </column>
         </createTable>
-        <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="order" baseColumnNames="user_id" constraintName="fk_order_user" referencedTableSchemaName="app" referencedTableName="user"
-                                 referencedColumnNames="id"/>
+
 
     </changeSet>
 </databaseChangeLog>
