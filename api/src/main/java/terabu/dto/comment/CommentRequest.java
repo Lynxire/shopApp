@@ -12,6 +12,8 @@ public class CommentRequest {
     @NotBlank(message = "пустое поле комментария")
     @Length(min = 1)
     private String comments;
+    @NotBlank(message = "пустое поле комментария")
+    private String email;
     @NotNull
     @Min(1)
     private Long userId;
