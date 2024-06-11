@@ -38,7 +38,7 @@ public class GoodsController {
     Если бы использовался только поиск по определенным значения, то лучше использовать @CachePut.
     @CachePut - к примеру мы ищем по id, если в КЭШ не найдено с таким id значение, то он использует goodsService.findById;
      */
-    @CacheEvict(value = "goods", allEntries = true)
+    @CacheEvict(value = "goods", allEntries = true, key = "'all'")
     public GoodsResponse addGoods(@RequestBody @Valid GoodsRequest goodsRequest) {
         return goodsService.save(goodsRequest);
     }
@@ -54,7 +54,7 @@ public class GoodsController {
 
     @Operation(summary = "Все товары")
     @GetMapping()
-    @Cacheable(value = "goods")
+    @Cacheable(value = "goods", key = "'all'")
     public List<GoodsResponse> getAllGoods(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
         return goodsService.findAll(page, size);
     }
