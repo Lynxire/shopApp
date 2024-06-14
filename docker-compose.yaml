@@ -2,7 +2,7 @@ version: '3'
 
 services:
   core:
-    image: lynxire/shop_main:0.2
+    image: lynxire/shop_main:0.4
     container_name: main
     ports:
       - "8080:8080"
@@ -12,7 +12,7 @@ services:
     environment:
       DB_USERNAME: postgres
       DB_PASSWORD: 1111
-      DB_HOST: db:5433
+      DB_HOST: jdbc:postgresql://db/shopapp
       REDIS_HOST: redis
       REDIS_PORTS: 6379
 
