@@ -2,6 +2,7 @@ package terabu.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import terabu.dto.users.UserDTO;
 import terabu.entity.status.OrderStatus;
 
 @Data
@@ -14,9 +15,8 @@ public class Order {
     private Long id;
     @Enumerated(EnumType.STRING)
     private OrderStatus status;
-    @ManyToOne()
     @JoinColumn(name = "userId")
-    private User user;
+    private Long userId;
 
 
 }

@@ -2,6 +2,7 @@ package terabu.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import terabu.dto.users.UserDTO;
 
 @Data
 @Entity
@@ -13,7 +14,6 @@ public class Discount {
     private String name;
     private Long sum;
 
-    @OneToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "userId")
+    private Long userId;
 }

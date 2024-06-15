@@ -6,6 +6,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import terabu.dto.bucket.BucketRequest;
 import terabu.dto.bucket.BucketResponse;
+import terabu.dto.data.UserDataDTO;
+import terabu.dto.users.UserDTO;
 import terabu.entity.*;
 import terabu.entity.status.OrderStatus;
 import terabu.exception.goods.GoodsNotFoundException;
@@ -26,10 +28,10 @@ public class BucketService {
     private final BucketRepository bucketRepository;
     private final GoodsRepository goodsRepository;
     private final OrderRepository orderRepository;
-    private final UserRepositorySpringData userRepository;
+    private final UserService userService;
     private final DiscountService discountService;
     private final StocksService stocksService;
-    private final UserDataRepository userDataRepository;
+    private final UserDataService userDataService;
 
     @LoggerAnnotation
     public BucketResponse addOrderAndGoodsByBucket(BucketRequest bucketRequest) {
@@ -41,11 +43,11 @@ public class BucketService {
         goodsById.setCount(goods1Count - bucketRequest.getCount());
         Goods goods = goodsRepository.save(goodsById);
 
-        User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не авторизован"));
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseGet
+        UserDTO user = userService.findUserById(bucketRequest.getUserId());
+        Order order = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.CREATE).orElseGet
                 (() -> {
                     Order newOrder = new Order();
-                    newOrder.setUser(user);
+                    newOrder.setUserId(user.getId());
                     newOrder.setStatus(OrderStatus.CREATE);
                     return orderRepository.save(newOrder);
                 });
@@ -71,19 +73,19 @@ public class BucketService {
     }
 
     public void completeBucket(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
+        UserDTO user = userService.findUserById(userId);
+        Order order = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         order.setStatus(OrderStatus.COMPLETE);
-        UserData userData = userDataRepository.findByUserId(userId).orElseThrow(()-> new UsernameNotFoundException("Пользователь не найден"));
-        Long ordersData = userData.getOrders();
-        userData.setOrders(ordersData + 1);
-        userDataRepository.save(userData);
+        UserDataDTO dataDTO = userDataService.findDataByUserId(userId);
+        Long ordersData = dataDTO.getOrders();
+        dataDTO.setOrders(ordersData + 1);
+        userDataService.save(dataDTO);
         orderRepository.save(order);
     }
 
     public void cleanBucket(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));;
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
+        UserDTO user = userService.findUserById(userId);;
+        Order order = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
         bucketList.forEach(bucket -> {
             List<Goods> goods = bucket.getGoods();
@@ -97,8 +99,8 @@ public class BucketService {
     }
 
     public void removeGoodsByBucket(BucketRequest bucketRequest) {
-        User user = userRepository.findById(bucketRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
+        UserDTO user = userService.findUserById(bucketRequest.getUserId());
+        Order order = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.CREATE).orElseThrow(() -> new OrdersNotFoundException("Нету заказов"));
         List<Bucket> bucketList = bucketRepository.findByGoodsIdAndOrdersId(bucketRequest.getGoodsId(), order.getId());
         bucketList.forEach(bucket -> {
                     Goods goods = goodsRepository.findById(bucketRequest.getGoodsId()).orElseThrow(() -> new GoodsNotFoundException("Товар не найден"));
@@ -109,25 +111,14 @@ public class BucketService {
     }
 
     public List<BucketResponse> getBucketByUserId(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        Order order = orderRepository.findByUserAndStatus(user, OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
+        UserDTO user = userService.findUserById(userId);
+        Order order = orderRepository.findByUserIdAndStatus(user.getId(), OrderStatus.CREATE).orElseThrow(() -> new RuntimeException("Корзина пустая"));
         List<Bucket> bucketList = bucketRepository.findAllByOrdersId(order.getId());
         List<BucketResponse> bucketResponseList = bucketList.stream().map(bucket -> {
             BucketResponse response = mapper.toResponse(bucket);
             bucket.getGoods().forEach(good -> response.setNameGoods(good.getName()));
             return response;
         }).toList();
-//
-//        List<BucketResponse> bucketResponseList = new ArrayList<>();
-//        bucketList.forEach(bucket -> {
-//            BucketResponse bucketResponse = mapper.toResponse(bucket);
-//            List<Goods> goodsList = bucket.getGoods().stream().toList();
-//            goodsList.forEach(goods -> {
-//                bucketResponse.setNameGoods(goods.getName());
-//                bucketResponseList.add(bucketResponse);
-//            });
-//        });
-
         return bucketResponseList;
     }
 

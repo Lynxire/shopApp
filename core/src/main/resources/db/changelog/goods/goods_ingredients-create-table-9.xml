@@ -1,0 +1,22 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation=" http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="starovoitov" id="goods_ingredients-create-table-9">
+        <validCheckSum>ANY</validCheckSum>
+        <preConditions onFail="MARK_RAN">
+            <not>
+                <tableExists tableName="goods_ingredients"/>
+            </not>
+        </preConditions>
+        <createTable schemaName="app" tableName="goods_ingredients">
+            <column name="goods_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_goods_id"/>
+            </column>
+            <column name="ingredients_id" type="bigint">
+                <constraints nullable="false" foreignKeyName="fk_ingredients_id"/>
+            </column>
+        </createTable>
+        <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="goods_ingredients" baseColumnNames="goods_id" constraintName="fk_goods_id" referencedTableSchemaName="app" referencedTableName="goods"
+                                 referencedColumnNames="id"/>
+        <addForeignKeyConstraint baseTableSchemaName="app" baseTableName="goods_ingredients" baseColumnNames="ingredients_id" constraintName="fk_ingredients_id" referencedTableSchemaName="app" referencedTableName="ingredients"
+                                 referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

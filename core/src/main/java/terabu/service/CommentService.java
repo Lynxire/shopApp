@@ -1,76 +1,42 @@
 package terabu.service;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
 import terabu.dto.comment.CommentRequest;
 import terabu.dto.comment.CommentResponse;
-import terabu.entity.Comments;
-import terabu.entity.User;
-import terabu.entity.UserData;
-import terabu.mapper.CommentMapper;
-import terabu.repository.CommentsRepository;
-import terabu.repository.UserDataRepository;
-import terabu.repository.UserRepositorySpringData;
 
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicInteger;
 
 @RequiredArgsConstructor
 @Service
 public class CommentService {
-    private final CommentsRepository commentsRepository;
-    private final CommentMapper commentMapper;
-    private final UserRepositorySpringData userRepository;
-    private final UserDataRepository userDataRepository;
-    public CommentResponse addComment(CommentRequest commentRequest) {
-        User user = userRepository.findById(commentRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        Comments comments = commentMapper.toEntity(commentRequest);
-        comments.setUser(user);
-        commentsRepository.save(comments);
-        return commentMapper.toResponse(comments);
+    private final RestTemplate restTemplate;
+
+    public CommentResponse addComment(@RequestBody @Valid CommentRequest commentRequest) {
+        return restTemplate.postForEntity("http://localhost:8082/comments/add",  commentRequest, CommentResponse.class).getBody();
     }
 
-    public void deleteComment(Long commentId) {
-        commentsRepository.findById(commentId).ifPresent(commentsRepository::delete);
+
+    public String deleteComment(@RequestParam @Min(1) @NotNull Long commentId) {
+        return restTemplate.postForEntity("http://localhost:8082/comments/delete?commentId=" + commentId, null,  String.class).getBody();
 
     }
 
-    public List<CommentResponse> getCommentByUser(Long userId) {
-        UserData data = userDataRepository.findDataByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        List<Comments> list = commentsRepository.findAllByUserId(userId);
-        List<CommentResponse> responses = new ArrayList<>();
-        list.forEach(comments -> {
-            CommentResponse commentResponse = commentMapper.toResponse(comments);
-            commentResponse.setName(data.getName());
-            responses.add(commentResponse);
-        });
-
-        return responses;
+    public List<CommentResponse> getMyComments(@RequestParam @Min(1) @NotNull Long userId) {
+        CommentResponse[] responses = restTemplate.getForEntity("http://localhost:8082/comments/myComments?userId=" + userId, CommentResponse[].class).getBody();
+        return Arrays.asList(responses);
     }
 
-//    Пагинацичя
-    public List<CommentResponse> getAllComments(){
-        List<Comments> commentsList = commentsRepository.findAll();
 
-        return commentsList.stream().map(comments ->{
-            CommentResponse commentResponse = commentMapper.toResponse(comments);
-            UserData userData = userDataRepository.findByUserId(comments.getUser().getId()).orElseThrow(()-> new UsernameNotFoundException("Пользователь не найден"));
-            commentResponse.setName(userData.getName());
-            return commentResponse;
-        }).toList();
-
-
-
-////        List<CommentResponse> responses = new ArrayList<>();
-//        commentsList.forEach(comments -> {
-//            User user = comments.getUser();
-//            UserData userData = userDataRepository.findByUserId(user.getId());
-//            CommentResponse commentResponse = commentMapper.toResponse(comments);
-//            commentResponse.setName(userData.getName());
-//            responses.add(commentResponse);
-//        });
-//        return responses;
+    public List<CommentResponse> getAllComments() {
+        CommentResponse[] responses = restTemplate.getForEntity("http://localhost:8082/comments/allComments", CommentResponse[].class).getBody();
+        return Arrays.asList(responses);
     }
 }

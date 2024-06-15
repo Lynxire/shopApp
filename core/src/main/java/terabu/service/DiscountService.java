@@ -2,52 +2,49 @@ package terabu.service;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import terabu.dto.data.UserDataDTO;
+import terabu.dto.users.UserDTO;
 import terabu.entity.Discount;
-import terabu.entity.User;
-import terabu.entity.UserData;
 import terabu.repository.SalesRepository;
-import terabu.repository.UserDataRepository;
-import terabu.repository.UserRepositorySpringData;
 
 @Transactional
 @Service
 @RequiredArgsConstructor
 public class DiscountService {
     private final SalesRepository salesRepository;
-    private final UserRepositorySpringData userRepository;
-    private final UserDataRepository userDataRepository;
+    private final UserService userService;
+    private final UserDataService userDataService;
 
     public Long calculatingDiscount(Long userId) {
-        UserData userData = userDataRepository.findByUserId(userId).orElseThrow(() -> new UsernameNotFoundException("User not found"));
+        UserDataDTO dataDTO = userDataService.findDataByUserId(userId);
         Discount discount = salesRepository.findByUserId(userId).orElseGet(() ->
                 {
                     Discount newDiscount = new Discount();
-                    User user = userRepository.findById(userId).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
+                    UserDTO user = userService.findUserById(userId);
                     newDiscount.setName("Personal sales: " + user.getLogin());
-                    newDiscount.setUser(user);
+                    newDiscount.setUserId(user.getId());
                     newDiscount.setSum(1L);
                     salesRepository.save(newDiscount);
                     return newDiscount;
                 }
         );
 
-        if (userData.getOrders() == null) {
-            userData.setOrders(0L);
+        if (dataDTO.getOrders() == null) {
+            dataDTO.setOrders(0L);
         }
 
-        if (userData.getOrders() >= 30) {
+        if (dataDTO.getOrders() >= 30) {
             discount.setSum(15L);
             salesRepository.save(discount);
             return discount.getSum();
         }
-        if (userData.getOrders() >= 20) {
+        if (dataDTO.getOrders() >= 20) {
             discount.setSum(10L);
             salesRepository.save(discount);
             return discount.getSum();
         }
-        if (userData.getOrders() >= 10) {
+        if (dataDTO.getOrders() >= 10) {
             discount.setSum(5L);
             salesRepository.save(discount);
             return discount.getSum();

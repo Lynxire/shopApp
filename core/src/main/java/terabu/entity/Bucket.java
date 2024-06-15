@@ -22,7 +22,7 @@ public class Bucket {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(schema = "app", name = "bucket_goods",
             joinColumns = @JoinColumn(name = "bucket_id"),
-            inverseJoinColumns = @JoinColumn(name = "good_id"))
+            inverseJoinColumns = @JoinColumn(name = "goods_id"))
     private List<Goods> goods;
 
     @ManyToMany(fetch = FetchType.EAGER)

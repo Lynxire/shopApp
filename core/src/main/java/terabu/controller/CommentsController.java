@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 import terabu.dto.comment.CommentRequest;
 import terabu.dto.comment.CommentResponse;
 import terabu.service.CommentService;
@@ -31,14 +32,14 @@ public class CommentsController {
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Удалить комментарий")
     @PostMapping("/delete")
-    public void deleteComment(@RequestParam @Min(1) @NotNull Long commentId) {
-        commentService.deleteComment(commentId);
+    public String deleteComment(@RequestParam @Min(1) @NotNull Long commentId) {
+       return commentService.deleteComment(commentId);
     }
     @SecurityRequirement(name = "Bearer Authentication")
     @Operation(summary = "Комментарии пользователя", description = "Данный метод отвечает за просмотр своих комментариев пользователю")
     @GetMapping("/myComments")
     public List<CommentResponse> getMyComments(@RequestParam @Min(1) @NotNull Long userId) {
-        return commentService.getCommentByUser(userId);
+        return commentService.getMyComments(userId);
     }
 
     @Operation(summary = "Все комментарии")

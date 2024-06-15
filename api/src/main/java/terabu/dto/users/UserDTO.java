@@ -1,36 +1,26 @@
-package terabu.entity;
+package terabu.dto.users;
 
-import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import terabu.entity.status.Role;
 
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-@Entity
 @Data
-@Table(schema = "app", name = "user")
-public class User implements UserDetails {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class UserDTO implements UserDetails {
     private Long id;
-
     private String login;
     private String email;
     private String password;
-    @Column(name = "data_registration")
     private LocalDate dateRegistration;
-    @Enumerated(EnumType.STRING)
-    private Role role;
-
+    private String role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(role.name()));
+        return List.of(new SimpleGrantedAuthority(role));
     }
 
     @Override
@@ -40,21 +30,21 @@ public class User implements UserDetails {
 
     @Override
     public boolean isAccountNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return true;
+        return false;
     }
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return false;
     }
 }

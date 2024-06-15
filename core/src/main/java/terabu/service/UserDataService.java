@@ -1,55 +1,23 @@
 package terabu.service;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import terabu.dto.data.UserDataRequest;
-import terabu.dto.data.UserDataResponse;
-import terabu.entity.UserData;
-import terabu.entity.User;
-import terabu.logger.LoggerAnnotation;
-import terabu.mapper.UserDataMapper;
-import terabu.repository.UserDataRepository;
-import terabu.repository.UserRepositorySpringData;
-
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.client.RestTemplate;
+import terabu.dto.data.UserDataDTO;
+import terabu.dto.users.UserDTO;
 @RequiredArgsConstructor
 @Service
-@Slf4j
 public class UserDataService {
-    private final UserDataRepository userDataRepository;
-    private final UserRepositorySpringData userRepository;
-    private final UserDataMapper userDataMapper;
-    @LoggerAnnotation
-    public UserDataResponse update(UserDataRequest userDataRequest) {
-        User user = userRepository.findById(userDataRequest.getUserId()).orElseThrow(() -> new UsernameNotFoundException("Пользователь не найден"));
-        if(userDataRequest.getLogin() != null){
-            user.setLogin(userDataRequest.getLogin());
-        }
-        if(userDataRequest.getPassword() != null){
-            user.setPassword(userDataRequest.getPassword());
-        }
-        if(userDataRequest.getEmail() != null){
-            user.setEmail(userDataRequest.getEmail());
-        }
-        userRepository.save(user);
-        UserData userData = userDataRepository.findDataByUserId(userDataRequest.getUserId()).orElseGet
-                (() -> {
-                    UserData newData = new UserData();
-                    newData.setUser(user);
-                    newData.setName(userDataRequest.getName());
-                    newData.setSurname(userDataRequest.getSurname());
-                    return userDataRepository.save(newData);
-                });
+    private final RestTemplate restTemplate;
 
-        userData.setUser(user);
-        userData.setName(userDataRequest.getName());
-        userData.setSurname(userDataRequest.getSurname());
-        userDataRepository.save(userData);
-        log.info("UserData successfully updated");
-        return userDataMapper.toResponse(userData);
-
+    public UserDataDTO findDataByUserId(@RequestParam Long userId){
+        UserDataDTO body = restTemplate.getForEntity("http://localhost:8081/data/findByUserId?userId=" + userId, UserDataDTO.class).getBody();
+        return body;
     }
 
-
+    public UserDTO save(@RequestBody UserDataDTO userDataDTO){
+        return restTemplate.postForEntity("http://localhost:8081/data/save", userDataDTO, UserDTO.class).getBody();
+    }
 }
