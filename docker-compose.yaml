@@ -35,6 +35,36 @@ services:
       POSTGRES_DB: shopapp
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 1111
+
+
+  #ShopUser
+  user-service:
+    image: lynxire/shop_user:latest
+    container_name: user
+    ports:
+      - 8081:8081
+    depends_on:
+      - db_user
+    environment:
+      DB_USERNAME: postgres
+      DB_PASSWORD: 1111
+      DB_HOST: jdbc:postgresql://db_user/user
+
+  db_user:
+    image: postgres:latest
+    container_name: db-user
+    depends_on:
+      - core
+    ports:
+      - 5434:5434
+    volumes:
+      - ./user_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: user
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 1111
+
+
   #Kafka
   kafka:
     image: apache/kafka:3.7.0
@@ -43,7 +73,7 @@ services:
     depends_on:
       - core
 
-  #ShomComments
+  #ShopComments
   comments-service:
     image: lynxire/shop_comments:latest
     container_name: comments
@@ -61,6 +91,8 @@ services:
   db_comments:
     image: postgres:latest
     container_name: db-comments
+    depends_on:
+      - core
     ports:
       - 5432:5432
     volumes:
@@ -86,4 +118,5 @@ services:
 volumes:
   postgres_data:
   comments_data:
+  user_data:
 
