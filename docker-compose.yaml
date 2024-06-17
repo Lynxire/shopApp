@@ -3,7 +3,7 @@ version: '3'
 services:
   #Main shop_app
   core:
-    image: lynxire/shop_main:0.4
+    image: lynxire/shop_main:latest
     container_name: main
     ports:
       - "8080:8080"
@@ -16,6 +16,10 @@ services:
       DB_HOST: jdbc:postgresql://db/shopapp
       REDIS_HOST: redis
       REDIS_PORTS: 6379
+      USER_URL: "http://user-service:8081/user"
+      DATA_URL: "http://user-service:8081/data"
+      COMMENTS_URL: "http://comments-service:8082/comments"
+
   #Redis
   redis:
     image: redis:latest
