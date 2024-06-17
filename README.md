@@ -1,4 +1,4 @@
-![Logo](https://th.bing.com/th/id/OIG2.U2nLuXTGMe7y52yVLlIV?w=1024&h=1024&rs=1&pid=ImgDetMain)
+![Logo](https://miro.medium.com/v2/resize:fit:600/1*MvUFlFTbiU40ae1SK69-Jg.png)
 
 
 # Shop
