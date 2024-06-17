@@ -31,7 +31,7 @@ services:
     image: postgres:latest
     container_name: my_postgres_db
     ports:
-      - 5433:5433
+      - 5433:5432
     volumes:
       - ./init.sql:/docker-entrypoint-initdb.d/init.sql
       - ./postgres_data:/var/lib/postgresql/data
@@ -60,7 +60,7 @@ services:
     depends_on:
       - core
     ports:
-      - 5434:5434
+      - 5434:5432
     volumes:
       - ./user_data:/var/lib/postgresql/data
     environment:
