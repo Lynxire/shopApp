@@ -12,7 +12,7 @@
 
 **Spring:** Spring Boot - **version 3.2.4**, Spring Data, Spring Security, Spring Test, Spring Validation
 
-**Database:** Posgresql, Redis
+**Database:** Postgresql, Redis
 
 **Broker:** Kafka
 
