@@ -31,7 +31,7 @@
 
 #### Можно ли запустить проект без IDE ?
 
-Да, в пункте **"Run Locally"** находится инструкция.
+Да, но требуется Docker Compose. В пункте **"Run Locally"** находится инструкция.
 
 
 ## Run Locally
@@ -59,5 +59,5 @@ Start the Docker-compose
 
 - [@Lynxire](https://github.com/Lynxire)
 ## Contacts
-- [@Telegram](https://t.me/terabu)
+- [Telegram](https://t.me/terabu)
 
