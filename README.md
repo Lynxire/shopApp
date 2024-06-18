@@ -27,7 +27,7 @@
 
 #### Какие сервисы требуются для корректной работы?
 
-Требуются сервисы:  __shopAppUser,  shopAppEmail,  shopAppComments__ - все они находятся в моем github.
+Требуются сервисы:  __[shopAppUser](https://github.com/Lynxire/shopAppUser),  [shopAppEmail](https://github.com/Lynxire/shopAppEmail),  [shopAppComments](https://github.com/Lynxire/ShopAppComments)__
 
 #### Можно ли запустить проект без IDE ?
 
