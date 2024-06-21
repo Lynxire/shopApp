@@ -32,6 +32,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring()
@@ -62,6 +63,7 @@ public class SecurityConfig {
                         .requestMatchers("/stocks/**").hasAuthority("Admin")
                         .requestMatchers("/data/**").hasAnyAuthority("Client", "Admin")
                         .anyRequest().authenticated())
+                .exceptionHandling(ex-> ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
