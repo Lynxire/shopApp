@@ -63,8 +63,8 @@ public class SecurityConfig {
                         .requestMatchers("/stocks/**").hasAuthority("Admin")
                         .requestMatchers("/data/**").hasAnyAuthority("Client", "Admin")
                         .anyRequest().authenticated())
-                .exceptionHandling(ex-> ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .exceptionHandling(ex-> ex.authenticationEntryPoint(new CustomAuthenticationEntryPoint()));
         return http.build();
     }
 
