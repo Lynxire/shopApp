@@ -11,7 +11,9 @@ import org.springframework.data.domain.PageRequest;
 import terabu.dto.goods.GoodsRequest;
 import terabu.dto.goods.GoodsResponse;
 import terabu.entity.Goods;
+import terabu.entity.Ingredients;
 import terabu.entity.status.GoodsType;
+import terabu.exception.goods.GoodsAlreadyExistException;
 import terabu.mapper.GoodsMapper;
 import terabu.repository.GoodsRepository;
 import terabu.repository.IngredientsRepository;
@@ -20,8 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -36,6 +37,44 @@ public class GoodsServiceTest {
     @InjectMocks
     private GoodsService goodsService;
 
+    @Test
+    public void testSaveGoods(){
+        List<Ingredients> ingredientsList = List.of(getIngredients());
+        when(goodsMapper.toEntity(any(GoodsRequest.class))).thenReturn(getGoods());
+        when(ingredientsRepository.findByIdIn(any())).thenReturn(ingredientsList);
+        when(goodsRepository.findByName(any(String.class))).thenReturn(Optional.empty());
+        when(goodsRepository.save(any(Goods.class))).thenReturn(getGoods());
+        when(goodsMapper.toResponse(any(Goods.class))).thenReturn(getGoodsResponse());
+
+        GoodsResponse result = goodsService.save(getGoodsRequest());
+
+        assertNotNull(result);
+        assertEquals(getGoods().getId(), result.getId());
+        assertEquals(getGoods().getName(), result.getName());
+
+        verify(goodsMapper, times(1)).toEntity(any(GoodsRequest.class));
+        verify(ingredientsRepository, times(1)).findByIdIn(any());
+        verify(goodsRepository, times(1)).findByName(any(String.class));
+        verify(goodsRepository, times(1)).save(any(Goods.class));
+        verify(goodsMapper, times(1)).toResponse(any(Goods.class));
+    }
+
+    @Test
+    public void testSaveGoodsWithException(){
+        List<Ingredients> ingredientsList = List.of(getIngredients());
+        Optional<Goods> goodsOptional = Optional.of(getGoods());
+        when(goodsMapper.toEntity(any(GoodsRequest.class))).thenReturn(getGoods());
+        when(ingredientsRepository.findByIdIn(any())).thenReturn(ingredientsList);
+        when(goodsRepository.findByName(any(String.class))).thenReturn(goodsOptional);
+
+        GoodsAlreadyExistException exception = assertThrows(GoodsAlreadyExistException.class, () -> goodsService.save(getGoodsRequest()));
+        assertEquals("С таким именем уже существует товар", exception.getMessage());
+
+        verify(goodsMapper, times(1)).toEntity(any(GoodsRequest.class));
+        verify(ingredientsRepository, times(1)).findByIdIn(any());
+        verify(goodsRepository, times(1)).findByName(any(String.class));
+
+    }
 
     @Test
     public void testAllGoods() {
@@ -104,14 +143,21 @@ public class GoodsServiceTest {
 
 
 
+    private Ingredients getIngredients(){
+        Ingredients ingredients = new Ingredients();
+        ingredients.setId(1L);
+        ingredients.setName("Test");
+        ingredients.setQuantity(10L);
+        return ingredients;
+    }
     private GoodsRequest getGoodsRequest(){
         GoodsRequest goodsRequest = new GoodsRequest();
         goodsRequest.setCount(10L);
         goodsRequest.setType("PIZZA");
-        goodsRequest.setName("Test");
+        goodsRequest.setName("PIZZA");
         goodsRequest.setPrice(15.0);
         goodsRequest.setIngredientsId(List.of(1L));
-        goodsRequest.setIngredientsQuality(List.of(15L));
+        goodsRequest.setIngredientsQuality(List.of(10L));
         return goodsRequest;
     }
 
